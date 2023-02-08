@@ -12,6 +12,7 @@
     "@chakra-ui/react": "^2.4.9",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@netlify/plugin-nextjs": "^4.30.4",
     "@next/font": "13.1.5",
     "@scure/bip39": "^1.1.0",
     "@truffle/hdwallet-provider": "^2.1.5",
