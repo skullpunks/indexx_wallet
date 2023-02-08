@@ -117,11 +117,11 @@ export let alchemyApps = {
 };
 export let chains = [
   {
-    name: "mainnet",
+    name: "Ethereum Mainnet",
     chain_id: 1,
   },
   {
-    name: "goerli",
+    name: "Goerli Test Network",
     chain_id: 5,
   },
 ];
