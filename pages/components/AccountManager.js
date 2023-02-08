@@ -206,7 +206,7 @@ function AccountManager({ mnemonic }) {
             <Img
               // height={"50px"}
               // width={"50px"}
-              borderRadius={"50%"}
+              // borderRadius={"50%"}
               src={"./logo.PNG"}
             />
           </Link>
@@ -341,19 +341,22 @@ function AccountManager({ mnemonic }) {
               />
               <Text> {isConnected ? "Connected" : "Connect Now"}</Text>
             </HStack>
-            <AccountInstance
-              style={{
-                marginLeft: "-50px"
-              }}
-              selector={() => {
-                console.log("selecting account !");
-              }}
-              size={"sm"}
-              hover_bg={"rgba(255,255,255,0.4)"}
-              color={"white"}
-              copyable={true}
-              account={selectedAccount}
-            />
+            <div style={{
+              marginLeft: "-45px"
+            }}
+            >
+              <AccountInstance
+
+                selector={() => {
+                  console.log("selecting account !");
+                }}
+                size={"sm"}
+                hover_bg={"rgba(255,255,255,0.4)"}
+                color={"white"}
+                copyable={true}
+                account={selectedAccount}
+              />
+            </div>
             <Button
               _hover={{ bg: "transparent" }}
               bg={"transparent"}

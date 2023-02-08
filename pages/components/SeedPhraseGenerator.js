@@ -105,7 +105,7 @@ const SeedPhraseManager = () => {
                 <Img
                   // height={"100px"}
                   // width={"100px"}
-                  borderRadius={"50%"}
+                  // borderRadius={"50%"}
                   src={"./logo.PNG"}
                 />
               </Link>

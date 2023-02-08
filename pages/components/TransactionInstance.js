@@ -8,7 +8,7 @@ function TransactionInstance({ asset, onClick }) {
     <HStack
       key={asset.toString()}
       width={"40vw"}
-      borderRadius={"20px"}
+      borderRadius={"5px"}
       bg={"white"}
       color={"black"}
       spacing={10}
@@ -32,9 +32,13 @@ function TransactionInstance({ asset, onClick }) {
         </HStack>
         <Text fontWeight={"700"}>{getMinimalAddress(asset.to)}</Text>
       </VStack>
-      <Button onClick={onClick} colorScheme={"cyan"}>
-        View Details
-      </Button>
+      <div style={{
+        marginLeft: "185px"
+      }}>
+        <Button onClick={onClick} colorScheme={"cyan"}>
+          View Details
+        </Button>
+      </div>
     </HStack>
   );
 }

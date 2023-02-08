@@ -70,7 +70,7 @@ function Unlock({ unlocker }) {
       justify={"space-between"}
     >
       <VStack spacing={5}>
-        <Img height={20} borderRadius={"50%"} src={"./logo.PNG"} />
+        <Img height={20}  src={"./logo.PNG"} />
         {/* https://images.g2crowd.com/uploads/product/image/large_detail/large_detail_cc75b4289277b1c28eafa1a8f776a8c0/atomic-wallet.png */}
 
         <Heading fontSize={"24px"}>Trust-Less, Control-More</Heading>

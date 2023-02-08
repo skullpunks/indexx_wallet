@@ -51,8 +51,8 @@ function AccountInstance({
       {!copyable && (
         <Img
           height={size == "sm" ? "40px" : "60px"}
-          borderRadius={"50%"}
-          src={"./logo1.PNG"}
+          // borderRadius={"50%"}
+          src={"./logo3.PNG"}
         />
       )}
 
