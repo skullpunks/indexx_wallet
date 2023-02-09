@@ -1,5 +1,4 @@
 import { Network } from "alchemy-sdk";
-
 export let tokens = {
   mainnet: [
     {
@@ -117,11 +116,13 @@ export let alchemyApps = {
 };
 export let chains = [
   {
-    name: "Ethereum Mainnet",
+    name: "mainnet",
+    label: "Ethereum Mainnet",
     chain_id: 1,
   },
   {
-    name: "Goerli Test Network",
+    name: "goerli",
+    label: "Goerli test network",
     chain_id: 5,
   },
 ];
@@ -135,7 +136,7 @@ export let buyMethods = [
   {
     title: "Indexx.ai",
     description: "You can easily buy, sell or swap crypto from indexx.ai",
-    logo: ""
+    logo: "https://indexx-exchange.s3.ap-northeast-1.amazonaws.com/indexxLogoSmall.png"
   },
   {
     title: "Coinbase Pay",

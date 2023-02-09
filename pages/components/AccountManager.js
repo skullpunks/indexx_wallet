@@ -237,7 +237,7 @@ function AccountManager({ mnemonic }) {
                     key={"chain" + chain.name}
                     value={chain.name}
                   >
-                    {capitalize(chain.name)}
+                    {capitalize(chain.label)}
                   </option>
                 );
               })}
