@@ -106,7 +106,7 @@ const SeedPhraseManager = () => {
                   // height={"100px"}
                   // width={"100px"}
                   // borderRadius={"50%"}
-                  src={"./logo.PNG"}
+                  src={"./indexx_wallet_white.PNG"}
                 />
               </Link>
 

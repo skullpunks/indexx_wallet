@@ -6,23 +6,30 @@ function AssetTemplate(props) {
   let userAddress = props?.userAddress;
   let assetName = props?.asset?.name;
   let chain = props?.chain;
-  let smartContractAddress = props?.asset?.address;
+  console.log(chain, 'chain')
   const [balance, setBalance] = useState("fetching Balance..");
-  async function getBalance() {
-    if (!userAddress) return 0;
-    let web3 = await getWeb3(chain);
+  let smartContractAddress;
+  if (chain === "bitcoin" || chain === "bitcoinTestNet") {
+    smartContractAddress = props?.asset?.address;
 
-    if (!web3) return 0;
-    var contract = new web3.eth.Contract(ERC20ABI, smartContractAddress);
-    let _bal = await contract.methods.balanceOf(userAddress).call();
-    _bal = parseInt(parseInt(_bal) / 10 ** 18);
-    setBalance(_bal);
-    return _bal;
+  } else {
+    smartContractAddress = props?.asset?.address;
+    async function getBalance() {
+      if (!userAddress) return 0;
+      let web3 = await getWeb3(chain);
+
+      if (!web3) return 0;
+      var contract = new web3.eth.Contract(ERC20ABI, smartContractAddress);
+      let _bal = await contract.methods.balanceOf(userAddress).call();
+      _bal = parseInt(parseInt(_bal) / 10 ** 18);
+      setBalance(_bal);
+      return _bal;
+    }
+
+    useEffect(() => {
+      getBalance();
+    }, [props]);
   }
-  useEffect(() => {
-    getBalance();
-  }, [props]);
-
   return (
     <HStack
       key={"asset" + smartContractAddress}
@@ -34,7 +41,9 @@ function AssetTemplate(props) {
       padding={"15px"}
       justify={"space-between"}
     >
-      <Box bg={"black"} color={"white"} borderRadius={"50%"} padding={"10px"}>
+      <Box bg={"black"} color={"white"} 
+      borderRadius={"50%"} padding={"10px"} boxShadow={"0 0 1px #eaf0f5;"}
+      >
         {assetName}
       </Box>
 

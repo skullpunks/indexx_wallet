@@ -1,32 +1,42 @@
 const { Alchemy } = require("alchemy-sdk");
 const { alchemyApps } = require("./data");
 import Web3 from "web3";
-import { GoerliProviders } from "./data";
+import { providers } from "./data";
+import axios from "axios";
 export async function getTransactions(network, address, setter) {
   const config = alchemyApps[network];
-  const alchemy = new Alchemy(config);
+  console.log(network)
+  if (network === "bscTestNet" || network === "bscMainNet") {
+    console.log(network);
+  } else if (network === "bitcoin" || network === "bitcoinTestNet") {
 
-  const to_trxs = await alchemy.core.getAssetTransfers({
-    fromBlock: "0x0",
-    toAddress: address,
-    category: ["external", "internal", "erc20", "erc721", "erc1155"],
-  });
-  const from_trxs = await alchemy.core.getAssetTransfers({
-    fromBlock: "0x0",
-    fromAddress: address,
-    category: ["external", "internal", "erc20", "erc721", "erc1155"],
-  });
-  let arr = [...to_trxs.transfers];
-  arr.concat({ ...from_trxs.transfers });
-  arr.reverse();
-  if (setter) setter(arr);
-  // console.log("transactions are ", arr);
+  }
+  else {
+    const alchemy = new Alchemy(config);
 
-  return arr;
+    const to_trxs = await alchemy.core.getAssetTransfers({
+      fromBlock: "0x0",
+      toAddress: address,
+      category: ["external", "internal", "erc20", "erc721", "erc1155"],
+    });
+    const from_trxs = await alchemy.core.getAssetTransfers({
+      fromBlock: "0x0",
+      fromAddress: address,
+      category: ["external", "internal", "erc20", "erc721", "erc1155"],
+    });
+    let arr = [...to_trxs.transfers];
+    arr.concat({ ...from_trxs.transfers });
+    arr.reverse();
+    console.log(arr);
+    if (setter) setter(arr);
+    // console.log("transactions are ", arr);
+
+    return arr;
+  }
 }
 
 export async function getWeb3(chain_name) {
-  let HttpProviderURL = GoerliProviders[chain_name];
+  let HttpProviderURL = providers[chain_name];
   if (!HttpProviderURL) {
     return null;
   }
@@ -143,4 +153,88 @@ export async function broadcastTransaction(
         type: "error",
       });
     });
+}
+
+
+export async function bnbExternalTransaction(address, network) {
+  try {
+    if (network === "bscTestNet") {
+      const response = await axios.get(`https://api-testnet.bscscan.com/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=X67YKQTIRVI5B7IR8XPW16BGTCTYXDWTSK`)
+      return response.data.result
+    } else {
+      const response = await axios.get(`https://api.bscscan.com/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=X67YKQTIRVI5B7IR8XPW16BGTCTYXDWTSK`)
+      return response.data.result
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+export async function bnberc20Transaction(address, network) {
+  try {
+    if (network === "bscTestNet") {
+      const response = await axios.get(`https://api-testnet.bscscan.com/api?module=account&action=tokentx&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=X67YKQTIRVI5B7IR8XPW16BGTCTYXDWTSK`)
+      return response.data.result
+    } else {
+      const response = await axios.get(`https://api.bscscan.com/api?module=account&action=tokentx&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=X67YKQTIRVI5B7IR8XPW16BGTCTYXDWTSK`)
+      return response.data.result
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+export async function bnberc20TransactionByContractAddress(address, contractAddress, network) {
+  try {
+    if (network === "bscTestNet") {
+      const response = await axios.get(`https://api-testnet.bscscan.com/api?module=account&action=tokentx &contractaddress=${contractAddress}&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=X67YKQTIRVI5B7IR8XPW16BGTCTYXDWTSK`)
+      return response.data.result
+    } else {
+      const response = await axios.get(`https://api.bscscan.com/api?module=account&action=tokentx&contractaddress=${contractAddress}&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=X67YKQTIRVI5B7IR8XPW16BGTCTYXDWTSK`)
+      return response.data.result
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+export async function bnberc721Transaction(address, network) {
+  try {
+    if (network === "bscTestNet") {
+      const response = await axios.get(`https://api-testnet.bscscan.com/api?module=account&action=tokennfttx&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=X67YKQTIRVI5B7IR8XPW16BGTCTYXDWTSK`)
+      return response.data.result
+    } else {
+      const response = await axios.get(`https://api.bscscan.com/api?module=account&action=tokennfttx&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=X67YKQTIRVI5B7IR8XPW16BGTCTYXDWTSK`)
+      return response.data.result
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+export async function bnbInternalTransaction(address, network) {
+  try {
+    if (network === "bscTestNet") {
+      const response = await axios.get(`https://api-testnet.bscscan.com/api?module=account&action=txlistinternal&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=X67YKQTIRVI5B7IR8XPW16BGTCTYXDWTSK`)
+      return response.data.result
+    } else {
+      const response = await axios.get(`https://api.bscscan.com/api?module=account&action=txlistinternal&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=X67YKQTIRVI5B7IR8XPW16BGTCTYXDWTSK`)
+      return response.data.result
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+
+export async function bnbAllTransaction(address, network) {
+  try {
+    if (network === "bscTestNet") {
+     
+    } else {
+     
+    }
+  } catch(err) {
+    console.log(err)
+  }
 }

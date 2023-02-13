@@ -1,6 +1,7 @@
 import { Box, Button, HStack, Img, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 import { getMinimalAddress } from "./AccountInstance";
+import { capitalize } from "../api/Utilities";
 
 function TransactionInstance({ asset, onClick }) {
   if (!asset) return <></>;
@@ -15,7 +16,7 @@ function TransactionInstance({ asset, onClick }) {
       padding={"10px"}
     >
       <Box bg={"black"} color={"white"} borderRadius={"50%"} padding={"10px"}>
-        {asset.asset}
+        {asset.asset === null ? capitalize(asset.category) : asset.asset}
       </Box>
 
       <VStack align={"left"}>
@@ -32,9 +33,11 @@ function TransactionInstance({ asset, onClick }) {
         </HStack>
         <Text fontWeight={"700"}>{getMinimalAddress(asset.to)}</Text>
       </VStack>
-      <div style={{
-        marginLeft: "185px"
-      }}>
+      <div
+      // style={{
+      //   marginLeft: "185px"
+      // }}
+      >
         <Button onClick={onClick} colorScheme={"cyan"}>
           View Details
         </Button>

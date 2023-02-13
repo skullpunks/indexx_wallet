@@ -12,8 +12,8 @@ function PaymentMethodInstance(props) {
       <Text color={"black"} width={"30vw"}>
         {payment?.description}
       </Text>
-      <Button colorScheme={"facebook"} variant="outline">
-        Continue with {payment?.title}
+      <Button colorScheme={"facebook"} variant="outline" onClick={() => window.open(payment?.link)}>
+        Continue with {payment?.title} 
       </Button>
     </VStack>
   );

@@ -47,6 +47,7 @@ function AccountManager({ mnemonic }) {
   const [selectedChain, setSelectedChain] = useState(chains[0].name);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [showAccounts, setShowAccounts] = useState(false);
+  const [showAccountDetails, setShowAccountDetails] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [accounts, setAccounts] = useState([]);
   const [buyIntent, setBuyIntent] = useState(false);
@@ -77,17 +78,23 @@ function AccountManager({ mnemonic }) {
     });
   }
   async function checkBalance(address) {
-    if (!address) return 0;
-    if (!web3 || !web3.current) {
-      web3.current = await getWeb3(selectedChain);
+    console.log(selectedChain.includes("bitcoin"))
+    if (selectedChain.includes("bitcoin")) {
+      console.log("bitcoin");
+      return 0;
+    } else {
+      if (!address) return 0;
+      if (!web3 || !web3.current) {
+        web3.current = await getWeb3(selectedChain);
+      }
+      let balance = await web3.current?.eth.getBalance(address);
+      if (balance == undefined) return 0;
+      balance = parseFloat(parseInt(balance) / 10 ** 18).toFixed(4);
+      if (balance.toString() === "0.0000") {
+        balance = 0;
+      }
+      return balance;
     }
-    let balance = await web3.current?.eth.getBalance(address);
-    if (balance == undefined) return 0;
-    balance = parseFloat(parseInt(balance) / 10 ** 18).toFixed(4);
-    if (balance.toString() === "0.0000") {
-      balance = 0;
-    }
-    return balance;
   }
 
   const generateAccounts = async (_seedPhrase) => {
@@ -99,7 +106,7 @@ function AccountManager({ mnemonic }) {
       const hdwallet = hdkey.fromMasterSeed(seed);
       const wallet_hdpath = "m/44'/60'/0'/0/";
       let _accounts = [];
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 1; i++) {
         const wallet = hdwallet.derivePath(wallet_hdpath + i).getWallet();
         const _address = "0x" + wallet.getAddress().toString("hex");
         let privKey = arrayToPrivateKey(wallet.getPrivateKey());
@@ -110,10 +117,13 @@ function AccountManager({ mnemonic }) {
           balance,
           address: _address,
           privateKey: privKey,
+          network: "evmChain"
         };
         _accounts.push(_accountsObject);
       }
 
+      //Bitcoin test account and main net account 
+      //const address = generateBitcoinTestAddress(mnemonic);
 
       setSelectedAccount(_accounts[0]);
       setAccounts(_accounts);
@@ -197,7 +207,9 @@ function AccountManager({ mnemonic }) {
   }, [selectedAccount]);
 
   return (
-    <VStack spacing={5}>
+    <VStack
+    // spacing={5}
+    >
       {/*  Top Bar */}
       <>
         <HStack width={"40vw"} justify={"space-between"}>
@@ -207,7 +219,7 @@ function AccountManager({ mnemonic }) {
               // height={"50px"}
               // width={"50px"}
               // borderRadius={"50%"}
-              src={"./logo.PNG"}
+              src={"./indexx_wallet_white.PNG"}
             />
           </Link>
           {/* Networks Selection */}
@@ -253,7 +265,7 @@ function AccountManager({ mnemonic }) {
               <Img
                 height={8}
                 src={selectedAccount?.avatar}
-                borderRadius={"50%"}
+              // borderRadius={"50%"}
               />
             </Button>
 
@@ -265,7 +277,7 @@ function AccountManager({ mnemonic }) {
                     position={"absolute"}
                     zIndex={2}
                     bg={"white"}
-                    width={"40vw"}
+                    width={"50vw"}
                     borderRadius={"20px"}
                     paddingTop={"5vh"}
                   >
@@ -285,6 +297,7 @@ function AccountManager({ mnemonic }) {
                           }}
                           copyable={false}
                           account={account}
+                          showDetails={true}
                         />
                       );
                     })}
@@ -301,9 +314,52 @@ function AccountManager({ mnemonic }) {
                 </ModalWrapper>
               </>
             )}
+
+            {showAccountDetails && (
+              <>
+                <ModalWrapper>
+                  <VStack
+                    height={"75vh"}
+                    position={"absolute"}
+                    zIndex={2}
+                    bg={"white"}
+                    width={"40vw"}
+                    borderRadius={"20px"}
+                    paddingTop={"5vh"}
+                  >
+                    <Text>
+                      <b>Address:</b> {selectedAccount?.address}
+                      <b>Private Key</b> {selectedAccount?.privateKey}
+                    </Text>
+
+                    <br></br>
+                    <br></br>
+
+                    <Button
+                      style={{ width: "270px" }}
+                      colorScheme={"red"}
+                      onClick={() => window.open("https://google.com")}
+                    >
+                      Import Account
+                    </Button>
+
+                    <br></br>
+                    <br></br>
+                    <Button
+                      style={{ width: "270px" }}
+                      colorScheme={"red"}
+                      onClick={() => setShowAccountDetails(false)}
+                    >
+                      Close
+                    </Button>
+                  </VStack>
+                </ModalWrapper>
+              </>
+
+            )}
           </Box>
         </HStack>
-        <hr style={{ content: "", width: "20vw" }} />
+        <hr style={{ content: "", width: "45vw" }} />
       </>
 
       {loadingMessage != null ? (
@@ -355,6 +411,7 @@ function AccountManager({ mnemonic }) {
                 color={"white"}
                 copyable={true}
                 account={selectedAccount}
+                showDetails={false}
               />
             </div>
             <Button
@@ -375,7 +432,7 @@ function AccountManager({ mnemonic }) {
 
           <VStack spacing={10}>
             <Img height={8} src={selectedAccount?.avatar} />
-            <Heading>{selectedAccount?.balance} ETH</Heading>
+            <Heading>{selectedAccount?.balance} {currencyOf[selectedChain]}</Heading>
             <HStack>
               <Button colorScheme={"blue"} style={{ width: "140px" }} onClick={() => setBuyIntent(true)}>
                 Buy
