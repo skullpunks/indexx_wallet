@@ -38,7 +38,7 @@ function TransactionInstance({ asset, onClick }) {
       //   marginLeft: "185px"
       // }}
       >
-        <Button onClick={onClick} colorScheme={"cyan"}>
+        <Button onClick={onClick} colorScheme={"blue"}>
           View Details
         </Button>
       </div>

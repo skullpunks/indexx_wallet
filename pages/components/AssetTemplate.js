@@ -53,7 +53,7 @@ function AssetTemplate(props) {
       />
       <Text>{balance} {assetName}</Text>
 
-      <Button onClick={props?.onClick} colorScheme={"cyan"}>
+      <Button onClick={props?.onClick} colorScheme={"blue"}>
         View Details
       </Button>
     </HStack>

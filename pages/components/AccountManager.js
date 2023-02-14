@@ -27,6 +27,7 @@ import PaymentMethodInstance from "./PaymentMethodInstance";
 import { parseEther } from "ethers/lib/utils";
 import TransactionInstance from "./TransactionInstance";
 import AssetTemplate from "./AssetTemplate";
+import { QRCodeCanvas } from "qrcode.react";
 import {
   getTransactions,
   getWeb3,
@@ -51,6 +52,7 @@ function AccountManager({ mnemonic }) {
   const [isConnected, setIsConnected] = useState(false);
   const [accounts, setAccounts] = useState([]);
   const [buyIntent, setBuyIntent] = useState(false);
+  const [receiveIntent, setReceiveIntent] = useState(false);
   const [sendIntent, setSendIntent] = useState(false);
   const [transferAmount, setTransferAmount] = useState(0);
   const [transferAddress, setTransferAddress] = useState(null);
@@ -447,7 +449,6 @@ function AccountManager({ mnemonic }) {
                     zIndex={2}
                     bg={"white"}
                     width={"40vw"}
-                    borderRadius={"20px"}
                     paddingTop={"5vh"}
                     overflowY={"scroll"}
                     spacing={10}
@@ -476,6 +477,63 @@ function AccountManager({ mnemonic }) {
                 colorScheme={"blue"}
                 style={{ width: "140px" }}
                 onClick={() => {
+                  setReceiveIntent(true);
+                }}
+              >
+                Receive
+              </Button>
+
+              {receiveIntent && (
+                <ModalWrapper>
+                  <VStack
+                    height={"45vh"}
+                    position={"absolute"}
+                    zIndex={2}
+                    bg={"white"}
+                    color={"black"}
+                    width={"40vw"}
+                    borderRadius={"20px"}
+                    paddingTop={"5vh"}
+                    spacing={10}
+                    padding={"20px"}
+                  >
+                    <Heading>Receive Funds</Heading>
+
+                    <QRCodeCanvas
+                      id="qrCode"
+                      value={selectedAccount?.address}
+                      size={100}
+                      level={"H"}
+                      // style={{ marginLeft: 92 }}
+                      // imageSettings={
+                      //   {
+                      //     src: image,
+                      //     height: 20,
+                      //     width: 20,
+                      //     // excavate: true
+                      //   }
+                      // }
+                    />
+                    <Text>{selectedAccount?.address}</Text>
+                    <HStack spacing={10}>
+                      <Button
+                        style={{ width: "270px" }}
+                        colorScheme={"red"}
+                        onClick={() => {
+                          setReceiveIntent(false);
+                        }}
+                      >
+                        Close
+                      </Button>
+                    </HStack>
+                  </VStack>
+                </ModalWrapper>
+              )}
+
+              <Button
+                colorScheme={"blue"}
+                style={{ width: "140px" }}
+                onClick={() => {
                   setSendIntent(true);
                 }}
               >
@@ -484,7 +542,7 @@ function AccountManager({ mnemonic }) {
               {sendIntent && transactionObject == null && (
                 <ModalWrapper>
                   <VStack
-                    height={"75vh"}
+                    height={"45vh"}
                     position={"absolute"}
                     zIndex={2}
                     bg={"white"}
@@ -492,7 +550,6 @@ function AccountManager({ mnemonic }) {
                     width={"40vw"}
                     borderRadius={"20px"}
                     paddingTop={"5vh"}
-                    overflowY={"scroll"}
                     spacing={10}
                     padding={"20px"}
                   >
@@ -532,7 +589,7 @@ function AccountManager({ mnemonic }) {
               {transactionObject && (
                 <ModalWrapper>
                   <VStack
-                    height={"75vh"}
+                    height={"45vh"}
                     position={"absolute"}
                     zIndex={2}
                     bg={"white"}
@@ -540,18 +597,17 @@ function AccountManager({ mnemonic }) {
                     width={"40vw"}
                     borderRadius={"20px"}
                     paddingTop={"5vh"}
-                    overflowY={"scroll"}
                     spacing={10}
                     padding={"20px"}
                   >
                     <Heading>Approve Transfer</Heading>
                     <HStack>
                       <Text> From : </Text>
-                      <Text>{getMinimalAddress(selectedAccount.address)}</Text>
+                      <Text>{(selectedAccount.address)}</Text>
                     </HStack>
                     <HStack>
                       <Text> To : </Text>
-                      <Text>{getMinimalAddress(transferAddress)}</Text>
+                      <Text>{(transferAddress)}</Text>
                     </HStack>
                     <HStack>
                       <Text> Amount : </Text>

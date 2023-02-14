@@ -4,7 +4,8 @@ const { BIP32Factory } = require('bip32');
 // You must wrap a tiny-secp256k1 compatible implementation
 const bip32 = BIP32Factory(ecc);
 const bip39 = require('bip39');
-const bitcoin = require('bitcoinjs-lib'); */
+const bitcoin = require('bitcoinjs-lib'); 
+*/
 export function capitalize(str) {
   let _str = String(str);
   _str = _str.toUpperCase()[0] + _str.slice(1);
