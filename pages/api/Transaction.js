@@ -5,9 +5,7 @@ import { providers } from "./data";
 import axios from "axios";
 export async function getTransactions(network, address, setter) {
   const config = alchemyApps[network];
-  console.log(network)
   if (network === "bscTestNet" || network === "bscMainNet") {
-    console.log(network);
   } else if (network === "bitcoin" || network === "bitcoinTestNet") {
 
   }

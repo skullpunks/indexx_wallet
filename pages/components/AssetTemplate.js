@@ -1,4 +1,4 @@
-import { Box, Button, HStack, Text } from "@chakra-ui/react";
+import { Box, Button, HStack, Img, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import Web3 from "web3";
 import { getWeb3 } from "../api/Transaction";
@@ -21,7 +21,7 @@ function AssetTemplate(props) {
       if (!web3) return 0;
       var contract = new web3.eth.Contract(ERC20ABI, smartContractAddress);
       let _bal = await contract.methods.balanceOf(userAddress).call();
-      _bal = parseInt(parseInt(_bal) / 10 ** 18);
+      _bal = (parseInt(_bal) / 10 ** 18);
       setBalance(_bal);
       return _bal;
     }
@@ -41,13 +41,17 @@ function AssetTemplate(props) {
       padding={"15px"}
       justify={"space-between"}
     >
-      <Box bg={"black"} color={"white"} 
-      borderRadius={"50%"} padding={"10px"} boxShadow={"0 0 1px #eaf0f5;"}
+      {/* <Box bg={"black"} color={"white"}
+        borderRadius={"50%"} padding={"10px"} boxShadow={"0 0 1px #eaf0f5;"}
       >
         {assetName}
-      </Box>
-
-      <Text>{balance}</Text>
+      </Box> */}
+      <Img
+        height={"50px"}
+        width={"50px"}
+        src={`./${assetName}.PNG`}
+      />
+      <Text>{balance} {assetName}</Text>
 
       <Button onClick={props?.onClick} colorScheme={"cyan"}>
         View Details

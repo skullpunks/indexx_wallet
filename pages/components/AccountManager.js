@@ -41,7 +41,7 @@ import { providers } from "web3";
 
 //
 
-// funtction to get Transactions of an address on a 'network' chain
+// function to get Transactions of an address on a 'network' chain
 
 function AccountManager({ mnemonic }) {
   const [selectedChain, setSelectedChain] = useState(chains[0].name);
@@ -298,6 +298,7 @@ function AccountManager({ mnemonic }) {
                           copyable={false}
                           account={account}
                           showDetails={true}
+                          chain={selectedChain}
                         />
                       );
                     })}
@@ -329,7 +330,7 @@ function AccountManager({ mnemonic }) {
                   >
                     <Text>
                       <b>Address:</b> {selectedAccount?.address}
-                      <b>Private Key</b> {selectedAccount?.privateKey}
+                      <b>Private Key:</b> {selectedAccount?.privateKey}
                     </Text>
 
                     <br></br>
@@ -412,6 +413,7 @@ function AccountManager({ mnemonic }) {
                 copyable={true}
                 account={selectedAccount}
                 showDetails={false}
+                chain={selectedChain}
               />
             </div>
             <Button

@@ -1,0 +1,9 @@
+{
+    "name": "Indexx Wallet",
+    "version": "1.0.0",
+    "manifest_version": 3,
+    "action": {
+      "default_title": "Indexx Wallet",
+      "default_popup": "index.html"
+    }
+  }

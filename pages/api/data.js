@@ -4,7 +4,6 @@ export let tokens = {
     {
       name: "INEX",
       address: "0x02082bE81e0b8BE7D7bdAa75A2706B20EdCD9BF9",
-      
     },
     {
       name: "IN500",
@@ -38,24 +37,13 @@ export let tokens = {
       name: "BUSD",
       address: "0x4Fabb145d64652a948d72533023f6E7A623C7C53",
     },
-
     {
       name: "MATIC",
       address: "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
     },
-
     {
       name: "OKB",
       address: "0x75231F58b43240C9718Dd58B4967c5114342a86c",
-    },
-
-    {
-      name: "stETH",
-      address: "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
-    },
-    {
-      name: "anyLTC",
-      address: "0x0aBCFbfA8e3Fda8B7FBA18721Caf7d5cf55cF5f5",
     },
     {
       name: "SHIB",
@@ -92,7 +80,6 @@ export let tokens = {
       name: "WBTC",
       address: "0xD8c4F6e84D6f6A0D39d25a3F42F15351303a6Af5",
     },
-
     {
       name: "WETH",
       address: "0x695364ffAA20F205e337f9e6226e5e22525838d9",
@@ -213,7 +200,7 @@ export let alchemyApps = {
   },
 
   bscMainNet: {
-    apiKey : "X67YKQTIRVI5B7IR8XPW16BGTCTYXDWTSK"
+    apiKey: "X67YKQTIRVI5B7IR8XPW16BGTCTYXDWTSK"
   },
 
   bscTestNet: {
@@ -304,6 +291,6 @@ export let currencyOf = {
   mainnet: "ETH",
   bitcoin: "BTC",
   bitcoinTestNet: "BTC",
-  bscTestNet : "BNB",
-  bscMainNet : "BNB"
+  bscTestNet: "BNB",
+  bscMainNet: "BNB"
 };

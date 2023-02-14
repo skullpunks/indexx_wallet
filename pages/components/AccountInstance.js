@@ -1,7 +1,6 @@
-import { Button, color, Heading, HStack, Img, Text, VStack, useClipboard } from "@chakra-ui/react";
+import { Button, Heading, HStack, Img, Text, useClipboard, VStack } from "@chakra-ui/react";
 import copy from "copy-to-clipboard";
-import React, { useState } from "react";
-import ModalWrapper from "./ModalWrapper";
+import { useEffect, useState } from "react";
 export function getMinimalAddress(_address, upperLimit = 36) {
   let minAddress =
     _address?.toString().slice(0, 8) +
@@ -16,17 +15,38 @@ function AccountInstance({
   hover_bg,
   size,
   copyable,
-  showDetails
+  showDetails,
+  chain
 }) {
   const [showCopy, setShowCopy] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [showAccountDetails, setShowAccountDetails] = useState(false);
+  const [explorerURL, setExplorerURL] = useState("");
   const placeholder = "text to be copied...";
 
   const { onCopy, value, setValue, hasCopied } = useClipboard(account?.privateKey);
   const { onCopy2, value2, setValue2, hasCopied2 } = useClipboard(account?.address);
   //setValue(account?.privateKey)
   console.log("account", account)
+
+  useEffect(()  => {
+    if(String(chain).localeCompare("bitcoinTestNet") === 0) {
+      setExplorerURL("https://live.blockcypher.com/btc-testnet/address/" + account?.address);
+    } else if(String(chain).localeCompare("bitcoin") ===0 ) {
+      setExplorerURL("https://live.blockcypher.com/btc/address/" + account?.address);
+    } else if(String(chain).localeCompare("mainnet") === 0) {
+      setExplorerURL("https://etherscan.io/address/" + account?.address);
+    } else if(String(chain).localeCompare("goerli") === 0) {
+      setExplorerURL("https://goerli.etherscan.io/address/" + account?.address);
+    } else if(String(chain).localeCompare("bscMainNet") === 0) {
+      setExplorerURL("https://bscscan.com/address/" + account?.address);
+    } else if(String(chain).localeCompare("bscTestNet") === 0) {
+      setExplorerURL("https://testnet.bscscan.com/address/" + account?.address);
+    }
+
+    // setValue(account?.privateKey)
+    // setValue2(account?.address)
+  }, [])
   if (!account) return <></>;
   return (
     <>
@@ -97,6 +117,7 @@ function AccountInstance({
 
         </HStack>
         {showDetails &&
+        <> 
           <Button
             _hover={{ bg: "transparent" }}
             bg={"transparent"}
@@ -104,19 +125,36 @@ function AccountInstance({
             style={{ color: "black" }}
           >
             Show Account Details
+          </Button> 
+          <Button
+            _hover={{ bg: "transparent" }}
+            bg={"transparent"}
+            onClick={() => window.open(explorerURL)}
+            style={{ color: "black" }}
+          >
+            View Account on Explorer
           </Button>
+        </>
         }
       </>
       {showAccountDetails && (
         <>
           <Text style={{ color: "black", fontSize: "small" }}>
-            <b>Address:</b> {account?.address}  
-             <Button onClick={onCopy2}>{hasCopied2 ? "Copied!" : "Copy"}</Button> <br></br> 
-            <b>Private Key</b> {account?.privateKey}  <Button onClick={onCopy}>{hasCopied ? "Copied!" : "Copy"}</Button>
+            <b>Address:</b> {account?.address}
+            <Button onClick={onCopy2}>{hasCopied2 ? "Copied!" : "Copy"}</Button> <br></br>
+            <b>Private Key:</b> {account?.privateKey}  <Button onClick={onCopy}>{hasCopied ? "Copied!" : "Copy"}</Button>
           </Text>
 
           <br></br>
           <br></br>
+
+          {/* <Button
+            style={{ width: "270px" }}
+            colorScheme={"red"}
+            onClick={() => window.open("https://google.com")}
+          >
+            Import Account
+          </Button> */}
           {/* <ModalWrapper>
             <VStack
               height={"75vh"}
