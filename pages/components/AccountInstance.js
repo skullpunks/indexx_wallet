@@ -1,6 +1,7 @@
 import { Button, Heading, HStack, Img, Input, Text, useClipboard, VStack } from "@chakra-ui/react";
 import copy from "copy-to-clipboard";
 import { useEffect, useState } from "react";
+import AccountManager from "./AccountManager";
 import ModalWrapper from "./ModalWrapper";
 export function getMinimalAddress(_address, upperLimit = 36) {
   let minAddress =
@@ -22,16 +23,10 @@ function AccountInstance({
   const [showCopy, setShowCopy] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [showAccountDetails, setShowAccountDetails] = useState(false);
-  const [showImportModal, setShowImportModal] = useState(false);
-  const [privateKey, setPrivateKey] = useState("");
   const [explorerURL, setExplorerURL] = useState("");
-  const placeholder = "text to be copied...";
-
   const { onCopy, value, setValue, hasCopied } = useClipboard(account?.privateKey);
   const { onCopy2, value2, setValue2, hasCopied2 } = useClipboard(account?.address);
   //setValue(account?.privateKey)
-  console.log("account", account)
-
   useEffect(() => {
     if (String(chain).localeCompare("bitcoinTestNet") === 0) {
       setExplorerURL("https://live.blockcypher.com/btc-testnet/address/" + account?.address);
@@ -47,9 +42,8 @@ function AccountInstance({
       setExplorerURL("https://testnet.bscscan.com/address/" + account?.address);
     }
 
-    // setValue(account?.privateKey)
-    // setValue2(account?.address)
   }, [])
+
   if (!account) return <></>;
   return (
     <>
@@ -102,6 +96,10 @@ function AccountInstance({
             >
               {getMinimalAddress(account?.address)}
             </Text>
+            {account?.isImported &&
+              <Text color={"black"}>
+                Imported
+              </Text>}
           </VStack>
           {showCopy == true && (
             <Text
@@ -138,56 +136,6 @@ function AccountInstance({
               View Account on Explorer
             </Button>
 
-
-            <Button
-              _hover={{ bg: "transparent" }}
-              bg={"transparent"}
-              onClick={() => setShowImportModal(true)}
-              style={{ color: "black" }}
-            >
-              Import account
-            </Button>
-
-            {showImportModal && (
-              <>
-                <ModalWrapper>
-                  <VStack
-                    height={"45vh"}
-                    position={"absolute"}
-                    zIndex={2}
-                    bg={"white"}
-                    width={"40vw"}
-                    borderRadius={"20px"}
-                    paddingTop={"5vh"}
-                  >
-                    <h2 style={{ color: "black" }}> <b> Import account </b></h2> <br></br>
-                    <div style={{ paddingLeft: "21px" }}>
-                      <p style={{ color: "black" }}> Imported accounts will not be associated with your originally created indexx.ai account Secret Recovery Phrase.
-                      </p>
-                      <br></br>
-
-                      <Input
-                        type={"password"}
-                        width={"100%"}
-                        placeholder={"Enter Private key"}
-                        onChange={(e) => {
-                          setPrivateKey(e.target.value);
-                        }}
-                      />
-                    </div>
-                    <Button
-                      style={{ width: "270px" }}
-                      colorScheme={"red"}
-                      onClick={() => setShowImportModal(false)}
-                    >
-                      Close
-                    </Button>
-                    <br></br>
-                    <br></br>
-                  </VStack>
-                </ModalWrapper>
-              </>
-            )}
           </>
         }
       </>
@@ -238,6 +186,8 @@ function AccountInstance({
         </>
 
       )}
+
+
     </>
   );
 }

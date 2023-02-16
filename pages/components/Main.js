@@ -10,7 +10,6 @@ function Main() {
   useEffect(() => {
     let _mnemonic = localStorage.getItem("mnemonic");
     if (_mnemonic && _mnemonic !== "null") {
-      console.log("mnemonic", _mnemonic);
       setMnemonic(_mnemonic);
     }
   }, []);

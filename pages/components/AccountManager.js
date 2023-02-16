@@ -15,6 +15,7 @@ import {
   Input,
   Spinner,
   useToast,
+  useClipboard,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
@@ -59,6 +60,9 @@ function AccountManager({ mnemonic }) {
   const [loadingMessage, setLoadingMessage] = useState(null);
   const [transactionObject, setTransactionObject] = useState(null);
   const [transactions, setTransactions] = useState([]);
+  const [privateKey, setPrivateKey] = useState("");
+  const [showImportModal, setShowImportModal] = useState(false);
+  const { onCopy, value, setValue, hasCopied } = useClipboard(selectedAccount?.address);
 
   const web3 = useRef(null);
   const toast = useToast();
@@ -80,7 +84,6 @@ function AccountManager({ mnemonic }) {
     });
   }
   async function checkBalance(address) {
-    console.log(selectedChain.includes("bitcoin"))
     if (selectedChain.includes("bitcoin")) {
       console.log("bitcoin");
       return 0;
@@ -101,35 +104,60 @@ function AccountManager({ mnemonic }) {
 
   const generateAccounts = async (_seedPhrase) => {
     try {
-      console.log('mnem', _seedPhrase)
-      // console.log("generating accounts");
-      _seedPhrase = _seedPhrase.replace(/  +/g, ' ');
-      const seed = bip39.mnemonicToSeedSync(_seedPhrase);
-      const hdwallet = hdkey.fromMasterSeed(seed);
-      const wallet_hdpath = "m/44'/60'/0'/0/";
-      let _accounts = [];
-      for (let i = 0; i < 1; i++) {
-        const wallet = hdwallet.derivePath(wallet_hdpath + i).getWallet();
-        const _address = "0x" + wallet.getAddress().toString("hex");
-        let privKey = arrayToPrivateKey(wallet.getPrivateKey());
+      if (String(_seedPhrase).startsWith('0x') || String(_seedPhrase).length === 64) {
+        let _accounts = accounts;
+        let addressObj = new Web3().eth.accounts.privateKeyToAccount('0x' + _seedPhrase);
+        let _address = addressObj.address;
         let balance = await checkBalance(_address);
         let _accountsObject = {
-          name: "Account " + (i + 1),
+          name: "Account " + (_accounts.length + 1),
           avatar: "./account.png",
           balance,
           address: _address,
-          privateKey: privKey,
-          network: "evmChain"
+          privateKey: addressObj.privateKey,
+          network: "evmChain",
+          isImported: true
         };
         _accounts.push(_accountsObject);
+
+
+        //Bitcoin test account and main net account 
+        //const address = generateBitcoinTestAddress(mnemonic);
+
+        setSelectedAccount(_accounts[0]);
+        setAccounts(_accounts);
+        return _accounts;
+      } else {
+        // console.log("generating accounts"); 
+        _seedPhrase = _seedPhrase.replace(/  +/g, ' ');
+        const seed = bip39.mnemonicToSeedSync(_seedPhrase);
+        const hdwallet = hdkey.fromMasterSeed(seed);
+        const wallet_hdpath = "m/44'/60'/0'/0/";
+        let _accounts = [];
+        for (let i = 0; i < 1; i++) {
+          const wallet = hdwallet.derivePath(wallet_hdpath + i).getWallet();
+          const _address = "0x" + wallet.getAddress().toString("hex");
+          let privKey = arrayToPrivateKey(wallet.getPrivateKey());
+          let balance = await checkBalance(_address);
+          let _accountsObject = {
+            name: "Account " + (i + 1),
+            avatar: "./account.png",
+            balance,
+            address: _address,
+            privateKey: privKey,
+            network: "evmChain",
+            isImported: false
+          };
+          _accounts.push(_accountsObject);
+        }
+
+        //Bitcoin test account and main net account 
+        //const address = generateBitcoinTestAddress(mnemonic);
+
+        setSelectedAccount(_accounts[0]);
+        setAccounts(_accounts);
+        return _accounts;
       }
-
-      //Bitcoin test account and main net account 
-      //const address = generateBitcoinTestAddress(mnemonic);
-
-      setSelectedAccount(_accounts[0]);
-      setAccounts(_accounts);
-      return _accounts;
     }
     catch (err) {
       console.log(err)
@@ -149,7 +177,6 @@ function AccountManager({ mnemonic }) {
       selectedAccount.address,
       setTransactions
     );
-
     // fetching balance of the user
     let balance = await checkBalance(selectedAccount.address);
     setSelectedAccount({ ...selectedAccount, balance });
@@ -185,6 +212,14 @@ function AccountManager({ mnemonic }) {
       },
       Toast
     );
+  }
+
+  const importAccount = () => {
+    console.log("private key", privateKey);
+    if (privateKey) {
+      generateAccounts(privateKey)
+      setShowImportModal(false);
+    }
   }
 
   // use Effects
@@ -233,6 +268,7 @@ function AccountManager({ mnemonic }) {
                 cursor: "pointer",
                 padding: "5px",
                 borderRadius: "20px",
+                marginRight: "45px"
               }}
               onChange={async (e) => {
                 setLoadingMessage("Switching to " + capitalize(e.target.value));
@@ -263,6 +299,7 @@ function AccountManager({ mnemonic }) {
               _hover={{ bg: "transparent" }}
               bg={"transparent"}
               onClick={() => setShowAccounts(true)}
+              style={{ marginLeft: "-65px"}}
             >
               <Img
                 height={8}
@@ -282,6 +319,7 @@ function AccountManager({ mnemonic }) {
                     width={"50vw"}
                     borderRadius={"20px"}
                     paddingTop={"5vh"}
+                    overflowY={"scroll"}
                   >
                     {accounts?.map((account) => {
                       return (
@@ -486,7 +524,7 @@ function AccountManager({ mnemonic }) {
               {receiveIntent && (
                 <ModalWrapper>
                   <VStack
-                    height={"45vh"}
+                    height={"60vh"}
                     position={"absolute"}
                     zIndex={2}
                     bg={"white"}
@@ -504,17 +542,17 @@ function AccountManager({ mnemonic }) {
                       value={selectedAccount?.address}
                       size={100}
                       level={"H"}
-                      // style={{ marginLeft: 92 }}
-                      // imageSettings={
-                      //   {
-                      //     src: image,
-                      //     height: 20,
-                      //     width: 20,
-                      //     // excavate: true
-                      //   }
-                      // }
+                    // style={{ marginLeft: 92 }}
+                    // imageSettings={
+                    //   {
+                    //     src: image,
+                    //     height: 20,
+                    //     width: 20,
+                    //     // excavate: true
+                    //   }
+                    // }
                     />
-                    <Text>{selectedAccount?.address}</Text>
+                    <Text>{selectedAccount?.address} <Button onClick={onCopy}>{hasCopied ? "Copied!" : "Copy"}</Button> </Text>
                     <HStack spacing={10}>
                       <Button
                         style={{ width: "270px" }}
@@ -542,7 +580,7 @@ function AccountManager({ mnemonic }) {
               {sendIntent && transactionObject == null && (
                 <ModalWrapper>
                   <VStack
-                    height={"45vh"}
+                    height={"55vh"}
                     position={"absolute"}
                     zIndex={2}
                     bg={"white"}
@@ -569,20 +607,18 @@ function AccountManager({ mnemonic }) {
                       }}
                     />
 
-                    <HStack spacing={10}>
-                      <Button
-                        style={{ width: "270px" }}
-                        colorScheme={"red"}
-                        onClick={() => {
-                          setSendIntent(false);
-                        }}
-                      >
-                        Close
-                      </Button>
-                      <Button style={{ width: "270px" }} colorScheme={"blue"} onClick={transferMoney}>
-                        Send
-                      </Button>
-                    </HStack>
+                    <Button style={{ width: "270px" }} colorScheme={"blue"} onClick={transferMoney}>
+                      Send
+                    </Button>
+                    <Button
+                      style={{ width: "270px" }}
+                      colorScheme={"red"}
+                      onClick={() => {
+                        setSendIntent(false);
+                      }}
+                    >
+                      Close
+                    </Button>
                   </VStack>
                 </ModalWrapper>
               )}
@@ -632,10 +668,66 @@ function AccountManager({ mnemonic }) {
                   </VStack>
                 </ModalWrapper>
               )}
-
-              <Button style={{ width: "140px" }} onClick={underDevelopmentToast} colorScheme={"blue"}>
+            </HStack>
+            <HStack>
+              <Button style={{ width: "140px" }} onClick={() => window.open("https://dex.indexx.ai")} colorScheme={"blue"}>
                 Swap
               </Button>
+
+              <Button style={{ width: "140px" }} onClick={() => { setShowImportModal(true) }} colorScheme={"blue"}>
+                Import Account
+              </Button>
+              {showImportModal &&
+                <ModalWrapper>
+                  <VStack
+                    height={"55vh"}
+                    position={"absolute"}
+                    zIndex={2}
+                    bg={"white"}
+                    color={"black"}
+                    width={"40vw"}
+                    borderRadius={"20px"}
+                    paddingTop={"5vh"}
+                    spacing={10}
+                    padding={"20px"}
+                  >
+                    <Heading>Import Account</Heading>
+                    <div style={{ paddingLeft: "21px" }}>
+                      <p style={{ color: "black" }}> Imported accounts will not be associated with your originally created indexx.ai account Secret Recovery Phrase.
+                      </p>
+                      <br></br>
+
+                      <Input
+                        type={"password"}
+                        style={{ color: "black" }}
+                        width={"100%"}
+                        placeholder={"Enter Private key"}
+                        onChange={(e) => {
+                          setPrivateKey(e.target.value);
+                        }}
+                      />
+                    </div>
+
+                    <Button
+                      style={{ width: "270px" }}
+                      colorScheme={"blue"}
+                      onClick={() => importAccount()}
+                    >
+                      Import
+                    </Button>
+
+                    <Button
+                      style={{ width: "270px" }}
+                      colorScheme={"red"}
+                      onClick={() => setShowImportModal(false)}
+                    >
+                      Close
+                    </Button>
+                    <br></br>
+                    <br></br>
+                  </VStack>
+                </ModalWrapper>
+              }
             </HStack>
             <Tabs>
               <TabList width={"40vw"} justifyContent={"space-between"}>
@@ -676,9 +768,9 @@ function AccountManager({ mnemonic }) {
                           {transactions.map((asset) => {
                             return (
                               <TransactionInstance
-                                onClick={underDevelopmentToast}
-                                key={asset.toString()}
+                                key={asset.hash.toString()}
                                 asset={asset}
+                                selectedChain={selectedChain}
                               />
                             );
                           })}

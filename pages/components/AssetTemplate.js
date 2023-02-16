@@ -6,14 +6,15 @@ function AssetTemplate(props) {
   let userAddress = props?.userAddress;
   let assetName = props?.asset?.name;
   let chain = props?.chain;
-  console.log(chain, 'chain')
   const [balance, setBalance] = useState("fetching Balance..");
+  // const [erc20URL, setErc20URL] = useState("");
   let smartContractAddress;
   if (chain === "bitcoin" || chain === "bitcoinTestNet") {
     smartContractAddress = props?.asset?.address;
 
   } else {
     smartContractAddress = props?.asset?.address;
+
     async function getBalance() {
       if (!userAddress) return 0;
       let web3 = await getWeb3(chain);
@@ -29,6 +30,19 @@ function AssetTemplate(props) {
     useEffect(() => {
       getBalance();
     }, [props]);
+  }
+  const openERC20URL = () => {
+    let erc20URL = '';
+    if (String(chain).localeCompare("mainnet") === 0) {
+      erc20URL = ("https://etherscan.io/token/" + smartContractAddress + "?a=" + userAddress);
+    } else if (String(chain).localeCompare("goerli") === 0) {
+      erc20URL = ("https://goerli.etherscan.io/token/" + smartContractAddress + "?a=" + userAddress);
+    } else if (String(chain).localeCompare("bscMainNet") === 0) {
+      erc20URL = ("https://bscscan.com/token/" + smartContractAddress + "?a=" + userAddress);
+    } else if (String(chain).localeCompare("bscTestNet") === 0) {
+      erc20URL = ("https://testnet.bscscan.com/token/" + smartContractAddress + "?a=" + userAddress);
+    }
+    window.open(erc20URL)
   }
   return (
     <HStack
@@ -53,7 +67,7 @@ function AssetTemplate(props) {
       />
       <Text>{balance} {assetName}</Text>
 
-      <Button onClick={props?.onClick} colorScheme={"blue"}>
+      <Button onClick={() => openERC20URL()} colorScheme={"blue"}>
         View Details
       </Button>
     </HStack>

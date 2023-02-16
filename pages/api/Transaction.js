@@ -6,12 +6,23 @@ import axios from "axios";
 export async function getTransactions(network, address, setter) {
   const config = alchemyApps[network];
   if (network === "bscTestNet" || network === "bscMainNet") {
-  } else if (network === "bitcoin" || network === "bitcoinTestNet") {
+    let arr = await bnbAllTransaction(address, network)
+    arr.forEach((a) => {
+      const s = /^[a-zA-Z]/.test(a.value)
+      if (s) {
 
+      } else {
+        a.value = String(Number(a.value) / Math.pow(10, 18))
+      }
+    })
+    arr.sort((a, b) => a.blockNumber > b.blockNumber ? -1 : 1);
+    setter(arr);
+    return arr; 
+  } else if (network === "bitcoin" || network === "bitcoinTestNet") {
+    setter([]);
   }
   else {
     const alchemy = new Alchemy(config);
-
     const to_trxs = await alchemy.core.getAssetTransfers({
       fromBlock: "0x0",
       toAddress: address,
@@ -22,12 +33,12 @@ export async function getTransactions(network, address, setter) {
       fromAddress: address,
       category: ["external", "internal", "erc20", "erc721", "erc1155"],
     });
+
     let arr = [...to_trxs.transfers];
-    arr.concat({ ...from_trxs.transfers });
+    arr = arr.concat(from_trxs.transfers);
     arr.reverse();
-    console.log(arr);
+    arr.sort((a, b) => a.blockNum > b.blockNum ? -1 : 1);
     if (setter) setter(arr);
-    // console.log("transactions are ", arr);
 
     return arr;
   }
@@ -227,12 +238,13 @@ export async function bnbInternalTransaction(address, network) {
 
 export async function bnbAllTransaction(address, network) {
   try {
-    if (network === "bscTestNet") {
-     
-    } else {
-     
-    }
-  } catch(err) {
+    let internalTxs = await bnbInternalTransaction(address, network);
+    let externalTxs = await bnbExternalTransaction(address, network);
+    let erc20Txs = await bnberc20Transaction(address, network);
+    let erc721Txs = await bnberc721Transaction(address, network);
+    let allTxs = [...internalTxs, ...externalTxs, ...erc20Txs, ...erc721Txs];
+    return allTxs;
+  } catch (err) {
     console.log(err)
   }
 }
