@@ -89,6 +89,10 @@ export let tokens = {
       address: "0x8C1170519FE80dc2d56eB95B073D5C3203208985",
     },
     {
+      name: "SRT",
+      address: "0x61c7F8ce88855E5Cdb7138Fa0b1Df6947fC47b56",
+    },
+    {
       name: "USDT",
       address: "0xe802376580c10fE23F027e1E19Ed9D54d4C9311e",
     },

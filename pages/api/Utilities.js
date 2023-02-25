@@ -1,14 +1,14 @@
-/*const ecc = require('tiny-secp256k1');
-console.log(ecc.isPoint)
-const { BIP32Factory } = require('bip32');
-// You must wrap a tiny-secp256k1 compatible implementation
+
+const bitcoin = require("bitcoinjs-lib");
+import * as ecc from "tiny-secp256k1";
+import { BIP32Factory } from "bip32";
+const bip39 = require("bip39");
 const bip32 = BIP32Factory(ecc);
-const bip39 = require('bip39');
-const bitcoin = require('bitcoinjs-lib'); 
-*/
+
 export function capitalize(str) {
   let _str = String(str);
   _str = _str.toUpperCase()[0] + _str.slice(1);
+  console.log('str,', _str)
   return _str;
 }
 export function arrayToPrivateKey(array_) {
@@ -17,38 +17,71 @@ export function arrayToPrivateKey(array_) {
   }).join("");
 }
 
-/*
+
 export function generateBitcoinTestAddress(mnemonic) {
-  //const bip32 = BIP32Factory.default(ecc);
   const seed = bip39.mnemonicToSeedSync(mnemonic);
   const root = bip32.fromSeed(seed);
 
-  const path = "m/49'/1'/0'/0/0";
-  const child = root.derivePath(path);
+  const path = "m/0'/0'/0'/0/0"; // Derivation path for first address
 
-  const { address } = bitcoin.payments.p2sh({
-    redeem: bitcoin.payments.p2wpkh({
-      pubkey: child.publicKey,
-      network: bitcoin.networks.testnet,
-    }),
-    network: bitcoin.networks.testnet,
-  });
-  console.log(address, "address");
+  const keyPair = root.derivePath(path);
+  const privateKey = keyPair.toWIF();
+  const address = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: bitcoin.networks.testnet }).address;
+
+  return {
+    privateKey: privateKey,
+    address: address
+  }
 }
 
 export function generateBitcoinMainAddress(mnemonic) {
-  //const bip32 = BIP32Factory.default(ecc);
   const seed = bip39.mnemonicToSeedSync(mnemonic);
   const root = bip32.fromSeed(seed);
 
-  const path = "m/49'/0'/0'/0";
-  const child = root.derivePath(path);
+  const path = "m/0'/0'/0'/0/0"; // Derivation path for first address
 
-  const { address } = bitcoin.payments.p2sh({
-    redeem: bitcoin.payments.p2wpkh({
-      pubkey: child.publicKey,
-      network: bitcoin.networks.bitcoin,
-    }),
-    network: bitcoin.networks.bitcoin,
-  });
-} */
+  const keyPair = root.derivePath(path);
+  const privateKey = keyPair.toWIF();
+  const address = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: bitcoin.networks.bitcoin }).address;
+
+  return {
+    privateKey: privateKey,
+    address: address
+  }
+} 
+
+export function generateBitcoinMainAddressFromPrivateKeyWIF(privateKeyWIF) {
+  const keyPair = bitcoin.ECPair.fromWIF(privateKeyWIF);
+  const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: bitcoin.networks.bitcoin });
+  return {
+    privateKey: privateKeyWIF,
+    address: address
+  }
+}
+
+export function generateBitcoinTestAddressFromPrivateKeyWIF(privateKeyWIF) {
+  const keyPair = bitcoin.ECPair.fromWIF(privateKeyWIF);
+  const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: bitcoin.networks.testnet });
+  return {
+    privateKey: privateKeyWIF,
+    address: address
+  }
+}
+
+export function generateBitcoinMainAddressFromPrivateKey(privateKey) {
+  const keyPair = bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'));
+  const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: bitcoin.networks.bitcoin });
+  return {
+    privateKey: privateKey,
+    address: address
+  }
+}
+
+export function generateBitcoinTestAddressFromPrivateKey(privateKey) {
+  const keyPair = bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'));
+  const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: bitcoin.networks.testnet });
+  return {
+    privateKey: privateKey,
+    address: address
+  }
+}

@@ -15,21 +15,22 @@ function Main() {
   }, []);
 
   return (
-    <Center background={"rgba(0,0,0,0.25)"} width={"100vw"} height={"100vh"}>
-      <Box
-        color={"white"}
-        bg={"black"}
-        width={"50vw"}
-        height={"90vh"}
-        padding={"20px"}
-        borderRadius={"20px"}
-        overflowY={"scroll"}
-        sx={{
-          "::-webkit-scrollbar": {
-            display: "none",
-          },
-        }}
-      >
+    // <Center>
+    //   <Box
+    //     color={"white"}
+    //     bg={"black"}
+    //     width={"50vw"}
+    //     height={"90vh"}
+    //     padding={"20px"}
+    //     borderRadius={"20px"}
+    //     overflowY={"scroll"}
+    //     sx={{
+    //       "::-webkit-scrollbar": {
+    //         display: "none",
+    //       },
+    //     }}
+    //   >
+    <>
         {!mnemonic ? (
           <SeedPhraseManager />
         ) : !unlocked ? (
@@ -39,8 +40,9 @@ function Main() {
             <AccountManager mnemonic={mnemonic} />
           </Box>
         )}
-      </Box>
-    </Center>
+        </>
+    //   </Box>
+    // </Center>
   );
 }
 

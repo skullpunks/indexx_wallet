@@ -6,6 +6,7 @@ import {
   Input,
   useToast,
   VStack,
+  Checkbox, CheckboxGroup
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
@@ -14,6 +15,10 @@ function Unlock({ unlocker }) {
   const [confirmingPassword, setConfirmingPassword] = useState(null);
   const [originalPassword, setOriginalPassword] = useState(null);
   const toast = useToast();
+  const [checkedItems, setCheckedItems] = useState([false, false])
+
+  const allChecked = checkedItems.every(Boolean)
+  const isIndeterminate = checkedItems.some(Boolean) && !allChecked
   function Toast(message) {
     toast({
       title: message.title,
@@ -25,7 +30,18 @@ function Unlock({ unlocker }) {
   }
 
   async function unlock() {
+    console.log(allChecked)
+
     if (!originalPassword && password != confirmingPassword) {
+      if (!allChecked) {
+        Toast({
+          title: `Authentication Error`,
+          description: `Please agree to the Terms of Use`,
+          type: "error",
+        });
+
+        return 0;
+      }
       Toast({
         title: `Authentication Error`,
         description: `Passwords do not match!`,
@@ -69,34 +85,49 @@ function Unlock({ unlocker }) {
       height={"80%"}
       justify={"space-between"}
     >
-      <VStack spacing={5}>
-        <Img height={20}  src={"./indexx_wallet_white.PNG"} />
-        {/* https://images.g2crowd.com/uploads/product/image/large_detail/large_detail_cc75b4289277b1c28eafa1a8f776a8c0/atomic-wallet.png */}
-
-        <Heading fontSize={"24px"}>Trust-Less, Control-More</Heading>
+      <VStack spacing={5}
+        width={"100%"}
+        height={"80%"}
+        justify={"center"}>
+        <Img
+          // height={"100px"}
+          width={"300px"}
+          // borderRadius={"50%"}
+          src={"./blue-wallet-expanded.png"}
+        />
+        {!originalPassword ? <Heading fontSize={"24px"}>Create Password</Heading>
+          :
+          <Heading fontSize={"24px"}>Password</Heading>
+        }
       </VStack>
 
       <VStack spacing={10}>
         <Input
           width={"100%"}
           border={"1px solid grey"}
-          colorScheme={"blue"}
-          placeholder={(!originalPassword ? "Create a new " : "") + "Password"}
+          colorScheme="brand"
+          placeholder={(!originalPassword ? "New password (8 Characters min)" : "Password")}
           type={"password"}
           onChange={(e) => setPassword(e.target.value)}
         />
         {!originalPassword && (
-          <Input
-            width={"100%"}
-            border={"1px solid grey"}
-            colorScheme={"blue"}
-            placeholder={"Confirm your Password"}
-            type={"password"}
-            onChange={(e) => setConfirmingPassword(e.target.value)}
-          />
+          <>
+            <Input
+              width={"100%"}
+              border={"1px solid grey"}
+              colorScheme="brand"
+              placeholder={"Confirm Password"}
+              type={"password"}
+              onChange={(e) => setConfirmingPassword(e.target.value)}
+            />
+            <Checkbox
+              isChecked={allChecked}
+              isIndeterminate={isIndeterminate}
+              onChange={(e) => setCheckedItems([e.target.checked, e.target.checked])}>I have read and agree to the Terms of Use</Checkbox>
+          </>
         )}
 
-        <Button style={{ width:"270px"}} onClick={unlock} colorScheme={"blue"}>
+        <Button style={{ width: "270px" }} onClick={unlock} colorScheme="brand">
           Unlock
         </Button>
       </VStack>

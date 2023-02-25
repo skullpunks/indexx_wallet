@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { getMinimalAddress } from "./AccountInstance";
 import { capitalize } from "../api/Utilities";
 
-function TransactionInstance({ asset, selectedChain }) {
+function NotificationInstance({ asset, selectedChain }) {
   const [explorerURL, setExplorerURL] = useState("");
   useEffect(() => {
     if (String(selectedChain).localeCompare("bitcoinTestNet") === 0) {
@@ -21,7 +21,11 @@ function TransactionInstance({ asset, selectedChain }) {
     }
 
   }, [])
-  if (!asset) return <></>;
+  if (!asset) {
+    return <></> }
+    else {
+      console.log('asset', asset)
+    } ;
   return (
     <HStack
       key={asset.hash.toString()}
@@ -66,4 +70,4 @@ function TransactionInstance({ asset, selectedChain }) {
   );
 }
 
-export default TransactionInstance;
+export default NotificationInstance;

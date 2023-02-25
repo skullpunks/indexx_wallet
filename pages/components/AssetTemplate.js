@@ -67,7 +67,7 @@ function AssetTemplate(props) {
       />
       <Text>{balance} {assetName}</Text>
 
-      <Button onClick={() => openERC20URL()} colorScheme={"blue"}>
+      <Button onClick={() => openERC20URL()} colorScheme="brand">
         View Details
       </Button>
     </HStack>

@@ -3,7 +3,7 @@ const { alchemyApps } = require("./data");
 import Web3 from "web3";
 import { providers } from "./data";
 import axios from "axios";
-export async function getTransactions(network, address, setter) {
+export async function getTransactions(network, address, setter, setter2) {
   const config = alchemyApps[network];
   if (network === "bscTestNet" || network === "bscMainNet") {
     let arr = await bnbAllTransaction(address, network)
@@ -17,9 +17,10 @@ export async function getTransactions(network, address, setter) {
     })
     arr.sort((a, b) => a.blockNumber > b.blockNumber ? -1 : 1);
     setter(arr);
+    setter2(arr);
     return arr; 
   } else if (network === "bitcoin" || network === "bitcoinTestNet") {
-    setter([]);
+    setter2([]);
   }
   else {
     const alchemy = new Alchemy(config);
@@ -38,8 +39,10 @@ export async function getTransactions(network, address, setter) {
     arr = arr.concat(from_trxs.transfers);
     arr.reverse();
     arr.sort((a, b) => a.blockNum > b.blockNum ? -1 : 1);
-    if (setter) setter(arr);
-
+    if (setter)  {
+    setter(arr);
+    setter2(arr);
+    } 
     return arr;
   }
 }

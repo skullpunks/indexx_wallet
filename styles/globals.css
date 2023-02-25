@@ -1,3 +1,22 @@
 * {
   margin: 0;
 }
+
+
+.wallet-image4 {
+  width: 615px;
+  height: 60px;
+  left: 521px;
+  top: 130px;
+
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 25px;
+  /* or 167% */
+
+  text-align: center;
+
+  color: #212121;
+}
