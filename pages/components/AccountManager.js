@@ -29,7 +29,6 @@ import {
 import { arrayToPrivateKey, capitalize, generateBitcoinMainAddress, generateBitcoinMainAddressFromPrivateKey, generateBitcoinTestAddress, generateBitcoinTestAddressFromPrivateKeyWIF } from "../api/Utilities";
 import AccountInstance from "./AccountInstance";
 import AssetTemplate from "./AssetTemplate";
-import BuyMethods from "./BuyMethods";
 import ModalWrapper from "./ModalWrapper";
 import NFTsInstance from "./NFTsInstance";
 import NotificationInstance from "./NotificationInstance";
