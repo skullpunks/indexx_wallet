@@ -359,7 +359,7 @@ function AccountManager({ mnemonic }) {
         </HStack>
         <HStack>
           {/* Networks Selection */}
-          <Box padding={"20px"} fontWeight={"500"}>
+          {/* <Box padding={"20px"} fontWeight={"500"}>
             <select
               style={{
                 background: "transparent",
@@ -390,7 +390,7 @@ function AccountManager({ mnemonic }) {
                 );
               })}
             </select>
-          </Box>
+          </Box> */}
           {/* Accounts Selection */}
           <Box>
             {/* <Button
