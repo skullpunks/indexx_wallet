@@ -39,6 +39,15 @@ import TransactionInstance from "./TransactionInstance";
 //
 
 // function to get Transactions of an address on a 'network' chain
+import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
+
+const brandPrimary = defineStyle({
+  color: 'black',
+})
+
+export const buttonTheme = defineStyleConfig({
+  variants: { brandPrimary },
+})
 
 function AccountManager({ mnemonic }) {
   const [selectedChain, setSelectedChain] = useState(chains[0].name);
@@ -350,7 +359,7 @@ function AccountManager({ mnemonic }) {
         </HStack>
         <HStack>
           {/* Networks Selection */}
-          {/* <Box padding={"20px"} fontWeight={"500"}>
+          <Box padding={"20px"} fontWeight={"500"}>
             <select
               style={{
                 background: "transparent",
@@ -381,7 +390,7 @@ function AccountManager({ mnemonic }) {
                 );
               })}
             </select>
-          </Box> */}
+          </Box>
           {/* Accounts Selection */}
           <Box>
             {/* <Button
@@ -433,12 +442,13 @@ function AccountManager({ mnemonic }) {
                     })}
                     <br></br>
                     <br></br>
+
                     <Button
                       style={{ width: "270px" }}
-                      colorScheme={"red"}
+                      color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
                       onClick={() => setShowAccounts(false)}
                     >
-                      Close
+                      Complete
                     </Button>
                   </VStack>
                 </ModalWrapper>
@@ -477,10 +487,10 @@ function AccountManager({ mnemonic }) {
                     <br></br>
                     <Button
                       style={{ width: "270px" }}
-                      colorScheme={"red"}
+                      color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
                       onClick={() => setShowAccountDetails(false)}
                     >
-                      Close
+                      Complete
                     </Button>
                   </VStack>
                 </ModalWrapper>
@@ -551,10 +561,12 @@ function AccountManager({ mnemonic }) {
                     cursor: "pointer",
                     padding: "5px",
                     borderRadius: "20px",
+                    marginLeft: "220px"
                     // marginRight: "45px"
                   }}
                   onChange={async (e) => {
                     setLoadingMessage("Switching to " + capitalize(e.target.value));
+                    console.log(e.target, 'value')
                     setSelectedChain(e.target.value);
                   }}
                   value={capitalize(selectedChain)}
@@ -747,11 +759,11 @@ function AccountManager({ mnemonic }) {
             })}
             <Button
               style={{ width: "270px" }}
-              colorScheme={"red"}
+              color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
               padding={"20px"}
               onClick={() => setBuyIntent(false)}
             >
-              Close
+              Complete
             </Button>
           </VStack>
         </ModalWrapper>
@@ -802,12 +814,12 @@ function AccountManager({ mnemonic }) {
                 onClick={onCopy}>{hasCopied ? "Copied!" : "Copy"}</Button>
               <Button
                 style={{ width: "200px" }}
-                colorScheme={"red"}
+                color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
                 onClick={() => {
                   setReceiveIntent(false);
                 }}
               >
-                Close
+                Complete
               </Button>
             </HStack>
           </VStack>
@@ -835,7 +847,7 @@ function AccountManager({ mnemonic }) {
             <Input
               type={"text"}
               style={{ color: "black" }}
-              width={"100%"}
+               maxWidth="750px" maxHeight="48px"
               placeholder={"Destination Address"}
               onChange={(e) => {
                 setTransferAddress(e.target.value);
@@ -844,7 +856,7 @@ function AccountManager({ mnemonic }) {
             <Input
               type={"text"}
               style={{ color: "black" }}
-              width={"100%"}
+               maxWidth="750px" maxHeight="48px"
               placeholder={"Amount to transfer"}
               onChange={(e) => {
                 setTransferAmount(e.target.value);
@@ -856,12 +868,13 @@ function AccountManager({ mnemonic }) {
               </Button>
               <Button
                 style={{ width: "270px" }}
-                colorScheme={"red"}
+                // colorScheme={"red"}
+                color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
                 onClick={() => {
                   setSendIntent(false);
                 }}
               >
-                Close
+                Complete
               </Button>
             </HStack>
           </VStack>
@@ -964,10 +977,10 @@ function AccountManager({ mnemonic }) {
 
               <Button
                 style={{ width: "270px" }}
-                colorScheme={"red"}
+                color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
                 onClick={() => setShowImportModal(false)}
               >
-                Close
+                Complete
               </Button>
             </HStack>
             <br></br>
@@ -1045,14 +1058,12 @@ function AccountManager({ mnemonic }) {
                 </TabPanel>
               </TabPanels>
             </Tabs>
-            <br></br>
-            <br></br>
             <Button
-              style={{ width: "270px", height: "44px" }}
-              colorScheme={"red"}
+              style={{ width: "270px" }}
+              color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
               onClick={() => setShowAssets(false)}
             >
-              Close
+              Complete
             </Button>
 
           </VStack>
@@ -1100,12 +1111,12 @@ function AccountManager({ mnemonic }) {
             </VStack>
             <Button
               style={{ width: "200px" }}
-              colorScheme={"red"}
+              color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
               onClick={() => {
                 setShowTxs(false);
               }}
             >
-              Close
+              Complete
             </Button>
           </VStack>
         </ModalWrapper>
@@ -1152,12 +1163,12 @@ function AccountManager({ mnemonic }) {
             </VStack>
             <Button
               style={{ width: "200px" }}
-              colorScheme={"red"}
+              color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
               onClick={() => {
                 setShowNotifications(false);
               }}
             >
-              Close
+              Complete
             </Button>
           </VStack>
         </ModalWrapper>
