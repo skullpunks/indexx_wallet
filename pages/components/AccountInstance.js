@@ -179,7 +179,7 @@ function AccountInstance({
                 colorScheme={"red"}
                 onClick={() => setShowAccountDetails(false)}
               >
-                Close
+                Complete
               </Button>
             </VStack>
           </ModalWrapper> */}
