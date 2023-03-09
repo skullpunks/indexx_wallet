@@ -565,7 +565,7 @@ function AccountManager({ mnemonic }) {
         </VStack>
       ) : (
         <>
-          <HStack width={"40vw"} justify={"space-between"}>
+          <HStack spacing={35} justifyItems={"center"}>
             <HStack
               onClick={() => {
                 setIsConnected((prev) => !prev);
@@ -581,11 +581,11 @@ function AccountManager({ mnemonic }) {
               _hover={{ bg: "rgba(255,255,255,0.2)" }}
             >
               <Switch id="isChecked" isConnected />
-              <Text> {isConnected ? "Connected" : "Connect Now"}</Text>
+              <Text width={"max-content"}> {isConnected ? "Connected" : "Connect Now"}</Text>
             </HStack>
-            <div
+            {/* <div
               style={{
-                marginLeft: "-45px",
+                // marginLeft: "-45px",
               }}
             >
               <AccountInstance
@@ -594,21 +594,21 @@ function AccountManager({ mnemonic }) {
                 }}
                 size={"sm"}
                 hover_bg={"rgba(255,255,255,0.4)"}
-                color={"white"}
+                color={"black"}
                 copyable={true}
                 account={selectedAccount}
                 showDetails={false}
                 chain={selectedChain}
               />
-            </div>
+            </div> */}
 
             <div
               style={{
-                marginLeft: "-325px",
+                // marginLeft: "-325px",
               }}
             >
               <Box
-                padding={"20px"}
+                // padding={"20px"}
                 fontWeight={"500"}
                 justifyContent={"center"}
               >
@@ -618,7 +618,7 @@ function AccountManager({ mnemonic }) {
                     cursor: "pointer",
                     padding: "5px",
                     borderRadius: "20px",
-                    marginLeft: "220px"
+                    // marginLeft: "220px"
                     // marginRight: "45px"
                   }}
                   onChange={async (e) => {
