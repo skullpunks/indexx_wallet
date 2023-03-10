@@ -51,15 +51,15 @@ import TransactionInstance from "./TransactionInstance";
 //
 
 // function to get Transactions of an address on a 'network' chain
-import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
+import { defineStyle, defineStyleConfig } from "@chakra-ui/react";
 
 const brandPrimary = defineStyle({
-  color: 'black',
-})
+  color: "black",
+});
 
 export const buttonTheme = defineStyleConfig({
   variants: { brandPrimary },
-})
+});
 
 function AccountManager({ mnemonic }) {
   const [selectedChain, setSelectedChain] = useState(chains[0].name);
@@ -312,8 +312,7 @@ function AccountManager({ mnemonic }) {
   const importAccount = () => {
     console.log("private key", privateKey);
     if (privateKey) {
-
-      (privateKey);
+      privateKey;
       setShowImportModal(false);
     }
   };
@@ -484,7 +483,10 @@ function AccountManager({ mnemonic }) {
 
                     <Button
                       style={{ width: "270px" }}
-                      color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
+                      color="white"
+                      variant="solid"
+                      bg="black"
+                      _hover={{ bg: "black" }}
                       onClick={() => setShowAccounts(false)}
                     >
                       Complete
@@ -526,7 +528,10 @@ function AccountManager({ mnemonic }) {
                     <br></br>
                     <Button
                       style={{ width: "270px" }}
-                      color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
+                      color="white"
+                      variant="solid"
+                      bg="black"
+                      _hover={{ bg: "black" }}
                       onClick={() => setShowAccountDetails(false)}
                     >
                       Complete
@@ -552,7 +557,7 @@ function AccountManager({ mnemonic }) {
         </VStack>
       ) : (
         <>
-          <HStack width={"40vw"} justify={"space-between"}>
+          <HStack spacing={35} justifyItems={"center"}>
             <HStack
               onClick={() => {
                 setIsConnected((prev) => !prev);
@@ -568,11 +573,14 @@ function AccountManager({ mnemonic }) {
               _hover={{ bg: "rgba(255,255,255,0.2)" }}
             >
               <Switch id="isChecked" isConnected />
-              <Text> {isConnected ? "Connected" : "Connect Now"}</Text>
+              <Text width={"max-content"}>
+                {" "}
+                {isConnected ? "Connected" : "Connect Now"}
+              </Text>
             </HStack>
-            <div
+            {/* <div
               style={{
-                marginLeft: "-45px",
+                // marginLeft: "-45px",
               }}
             >
               <AccountInstance
@@ -581,76 +589,106 @@ function AccountManager({ mnemonic }) {
                 }}
                 size={"sm"}
                 hover_bg={"rgba(255,255,255,0.4)"}
-                color={"white"}
+                color={"black"}
                 copyable={true}
                 account={selectedAccount}
                 showDetails={false}
                 chain={selectedChain}
               />
-            </div>
+            </div> */}
 
             <div
-              style={{
-                marginLeft: "-325px",
-              }}
+              style={
+                {
+                  // marginLeft: "-325px",
+                }
+              }
             >
               <Box
-                padding={"20px"}
+                // padding={"20px"}
                 fontWeight={"500"}
                 justifyContent={"center"}
               >
-                <select
-                  style={{
-                    background: "transparent",
-                    cursor: "pointer",
-                    padding: "5px",
-                    borderRadius: "20px",
-                    marginLeft: "220px"
-                    // marginRight: "45px"
-                  }}
-                  onChange={async (e) => {
-                    // setLoadingMessage(
-                    //   "Switching to " + capitalize(e.target.value)
-                    // );
-                    // setLoadingMessage("Switching");
-                    setIsSwitchLoading(true);
-                    console.log("Switching to " + capitalize(e.target.value));
-                    setSelectedChain(e.target.value);
-                    console.log("Changed to: ", selectedChain);
-                    if (((String(e.target.value).localeCompare("mainnet") === 0) || (String(e.target.value).localeCompare("goerli") === 0) || (String(e.target.value).localeCompare("bscMainNet") === 0) || (String(e.target.value).localeCompare("bscTestNet") === 0))) {
-                      let reqAcc = accounts.filter((x => x.network === "evmChain"))
-                      console.log(reqAcc[0]);
-                      setSelectedAccount(reqAcc[0])
-                    }
-                    if (((String(e.target.value).localeCompare("bitcoinTestNet") === 0))) {
-                      let reqAcc = accounts.filter((x => x.network === "bitcoinTest"))
-                      console.log(reqAcc);
-                      setSelectedAccount(reqAcc[0])
-                    }
-                    if (((String(e.target.value).localeCompare("bitcoin") === 0))) {
-                      let reqAcc = accounts.filter((x => x.network === "bitcoinMain"))
-                      console.log(reqAcc[0]);
-                      setSelectedAccount(reqAcc[0])
-                    }
-                  }}
-                  defaultValue={capitalize(selectedChain)}
-                >
-                  {chains.map((chain) => {
-                    return (
-                      <option
-                        style={{
-                          background: "white",
-                          color: "black",
-                          cursor: "pointer",
-                        }}
-                        key={"chain" + chain.name}
-                        value={chain.name}
-                      >
-                        {capitalize(chain.label)}
-                      </option>
-                    );
-                  })}
-                </select>
+                {isSleeping ? (
+                  <select
+                    disabled
+                    style={{
+                      background: "transparent",
+                      cursor: "pointer",
+                      padding: "5px",
+                      borderRadius: "20px",
+                      // marginLeft: "220px"
+                      // marginRight: "45px"
+                    }}
+                    onChange={async (e) => {
+                      // setLoadingMessage(
+                      //   "Switching to " + capitalize(e.target.value)
+                      // );
+                      // setLoadingMessage("Switching");
+                      setIsSwitchLoading(true);
+                      console.log(e.target, "value");
+                      console.log("Switching to " + capitalize(e.target.value));
+                      setSelectedChain(e.target.value);
+                      console.log("Changed to: ", selectedChain);
+                    }}
+                    defaultValue={capitalize(selectedChain)}
+                  >
+                    {chains.map((chain) => {
+                      return (
+                        <option
+                          style={{
+                            background: "white",
+                            color: "black",
+                            cursor: "pointer",
+                          }}
+                          key={"chain" + chain.name}
+                          value={chain.name}
+                        >
+                          {capitalize(chain.label)}
+                        </option>
+                      );
+                    })}
+                  </select>
+                ) : (
+                  <select
+                    style={{
+                      background: "transparent",
+                      cursor: "pointer",
+                      padding: "5px",
+                      borderRadius: "20px",
+                      // marginLeft: "220px"
+                      // marginRight: "45px"
+                    }}
+                    onChange={async (e) => {
+                      // setLoadingMessage(
+                      //   "Switching to " + capitalize(e.target.value)
+                      // );
+                      // setLoadingMessage("Switching");
+                      setIsSwitchLoading(true);
+                      console.log(e.target, "value");
+                      console.log("Switching to " + capitalize(e.target.value));
+                      setSelectedChain(e.target.value);
+                      console.log("Changed to: ", selectedChain);
+                    }}
+                    defaultValue={capitalize(selectedChain)}
+                  >
+                    {chains.map((chain) => {
+                      return (
+                        <option
+                          style={{
+                            background: "white",
+                            color: "black",
+                            cursor: "pointer",
+                          }}
+                          key={"chain" + chain.name}
+                          value={chain.name}
+                        >
+                          {capitalize(chain.label)}
+                        </option>
+                      );
+                    })}
+                  </select>
+                )}
               </Box>
             </div>
 
@@ -669,10 +707,11 @@ function AccountManager({ mnemonic }) {
           </HStack>
 
           <VStack spacing={10}>
-            {(isSwitchLoading) ?
+            {isSwitchLoading ? (
               <Spinner />
-              :
-              <Img height={"50px"} width={"50px"} src={image} />}
+            ) : (
+              <Img height={"50px"} width={"50px"} src={image} />
+            )}
             <Heading>
               {selectedAccount?.balance} {currencyOf[selectedChain]}
             </Heading>
@@ -888,7 +927,10 @@ function AccountManager({ mnemonic }) {
             })}
             <Button
               style={{ width: "270px" }}
-              color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
+              color="white"
+              variant="solid"
+              bg="black"
+              _hover={{ bg: "black" }}
               padding={"20px"}
               onClick={() => setBuyIntent(false)}
             >
@@ -940,7 +982,10 @@ function AccountManager({ mnemonic }) {
               </Button>
               <Button
                 style={{ width: "200px" }}
-                color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
+                color="white"
+                variant="solid"
+                bg="black"
+                _hover={{ bg: "black" }}
                 onClick={() => {
                   setReceiveIntent(false);
                 }}
@@ -970,7 +1015,8 @@ function AccountManager({ mnemonic }) {
             <Input
               type={"text"}
               style={{ color: "black" }}
-              maxWidth="750px" maxHeight="48px"
+              maxWidth="750px"
+              maxHeight="48px"
               placeholder={"Destination Address"}
               onChange={(e) => {
                 setTransferAddress(e.target.value);
@@ -979,7 +1025,8 @@ function AccountManager({ mnemonic }) {
             <Input
               type={"text"}
               style={{ color: "black" }}
-              maxWidth="750px" maxHeight="48px"
+              maxWidth="750px"
+              maxHeight="48px"
               placeholder={"Amount to transfer"}
               onChange={(e) => {
                 setTransferAmount(e.target.value);
@@ -996,7 +1043,10 @@ function AccountManager({ mnemonic }) {
               <Button
                 style={{ width: "270px" }}
                 // colorScheme={"red"}
-                color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
+                color="white"
+                variant="solid"
+                bg="black"
+                _hover={{ bg: "black" }}
                 onClick={() => {
                   setSendIntent(false);
                 }}
@@ -1107,7 +1157,10 @@ function AccountManager({ mnemonic }) {
 
               <Button
                 style={{ width: "270px" }}
-                color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
+                color="white"
+                variant="solid"
+                bg="black"
+                _hover={{ bg: "black" }}
                 onClick={() => setShowImportModal(false)}
               >
                 Complete
@@ -1187,7 +1240,10 @@ function AccountManager({ mnemonic }) {
             </Tabs>
             <Button
               style={{ width: "270px" }}
-              color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
+              color="white"
+              variant="solid"
+              bg="black"
+              _hover={{ bg: "black" }}
               onClick={() => setShowAssets(false)}
             >
               Complete
@@ -1234,7 +1290,10 @@ function AccountManager({ mnemonic }) {
             </VStack>
             <Button
               style={{ width: "200px" }}
-              color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
+              color="white"
+              variant="solid"
+              bg="black"
+              _hover={{ bg: "black" }}
               onClick={() => {
                 setShowTxs(false);
               }}
@@ -1283,7 +1342,10 @@ function AccountManager({ mnemonic }) {
             </VStack>
             <Button
               style={{ width: "200px" }}
-              color="white" variant="solid" bg="black" _hover={{ bg: 'black' }}
+              color="white"
+              variant="solid"
+              bg="black"
+              _hover={{ bg: "black" }}
               onClick={() => {
                 setShowNotifications(false);
               }}
