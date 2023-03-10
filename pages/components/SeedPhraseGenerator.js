@@ -6,26 +6,21 @@ import {
   Heading,
   HStack,
   Img,
-  Input,
-  Modal,
-  Text,
-  useDisclosure,
-  VStack,
+  Input, Text, VStack,
   Wrap,
-  WrapItem,
+  WrapItem
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import * as bip39 from "@scure/bip39";
+import { useEffect, useState } from "react";
 
 import { wordlist } from "@scure/bip39/wordlists/english";
 import copy from "copy-to-clipboard";
-import Link from "next/link";
-import Unlock from "./Unlock";
 // import Register from "./Register";
 const SeedPhraseManager = () => {
-  // const faceio = new faceIO("fioa1cfa");
+  // const faceio = new faceIO("fioa408b");
   const [seedPhrase, setSeedPhrase] = useState("");
   const [copied, setCopied] = useState(false);
+  const [pasted, setPasted] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
   const [loader, setLoader] = useState(false);
   const [showSeedPhrase, setShowSeedPhrase] = useState(false);
@@ -34,6 +29,8 @@ const SeedPhraseManager = () => {
   let faceioInstance = null;
 
   const handleNewSeedPhrase = () => {
+    console.log(wordlist)
+    console.log(wordlist.length)
     const newSeedPhrase = bip39.generateMnemonic(wordlist);
     // const newSeedPhrase =
     //   " asd adsdasdaasdas d asd asd sa das d as das d asd sda sdasdasd asd";
@@ -54,13 +51,16 @@ const SeedPhraseManager = () => {
   }
 
   function nextHandler() {
-    location.reload();
+    setShowImportModal(true);
+    setSeedPhrase("");
+    //location.reload();
   }
 
   async function importFromSeedphrase() {
     setLoader(true);
     if (!seedPhrase || seedPhrase == "") {
       alert("Please Enter Valid Seedphrase");
+      return;
     }
     localStorage.setItem("mnemonic", seedPhrase);
     location.reload();
@@ -69,6 +69,7 @@ const SeedPhraseManager = () => {
   async function onClickedPaste() {
     const text = await navigator.clipboard.readText();
     setSeedPhrase(text);
+    setPasted(true)
   }
 
 
@@ -91,7 +92,7 @@ const SeedPhraseManager = () => {
     if (faceIO && !faceioInstance) {
       // faceioInstance = new faceIO("fioab466");
 
-      faceioInstance = new faceIO("fioa1cfa");
+      faceioInstance = new faceIO("fioa408b");
       console.log(faceioInstance);
       // faceioInstance = new faceIO("fioab466");
     }
@@ -101,7 +102,7 @@ const SeedPhraseManager = () => {
     console.log("Handle face auth")
     let faceio;
     if (!faceIoObject) {
-      faceio = new faceIO("fioa1cfa")
+      faceio = new faceIO("fioa408b")
       setFaceIoObect(faceio);
     } else {
       faceio = faceIoObject;
@@ -129,8 +130,26 @@ const SeedPhraseManager = () => {
 			Age Approximation: ${userInfo.details.age}`
       );
       console.log(userInfo);
+      /*
+            // Generate a 128-bit random number from the unique ID
+            const randomBits = bip39.mnemonicToEntropy(userInfo?.facialId);
+      
+            // Convert the random bits to a 12-word mnemonic
+            const mnemonic = bip39.entropyToMnemonic(randomBits);
+            console.log('mnemonic', mnemonic);
+      
+            setSeedPhrase(newSeedPhrase);
+            localStorage.setItem("seedPhrase", newSeedPhrase); */
+
+      const newSeedPhrase = bip39.generateMnemonic(wordlist);
+      // const newSeedPhrase =
+      //   " asd adsdasdaasdas d asd asd sa das d as das d asd sda sdasdasd asd";
+      setSeedPhrase(newSeedPhrase);
+      setShowSeedPhrase(true);
+      localStorage.setItem("seedPhrase", newSeedPhrase);
       // handle success, save the facial ID, redirect to dashboard...
     }).catch(errCode => {
+      console.log(errCode)
       // handle enrollment failure. Visit:
       // https://faceio.net/integration-guide#error-codes
       // for the list of all possible error codes
@@ -164,7 +183,7 @@ const SeedPhraseManager = () => {
     console.log("Login");
     let faceio;
     if (!faceIoObject) {
-      faceio = new faceIO("fioa1cfa")
+      faceio = new faceIO("fioa408b")
       setFaceIoObect(faceio);
     } else {
       faceio = faceIoObject;
@@ -361,6 +380,7 @@ const SeedPhraseManager = () => {
                     </Button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <Button
                       onClick={nextHandler}
+                      isDisabled={!copied}
                       colorScheme="brand"
                       width={"194px"}
                       borderRadius={"2px"}
@@ -441,7 +461,7 @@ const SeedPhraseManager = () => {
                   borderRadius={"2px"} onClick={onClickedPaste}>
                   Paste
                 </Button>
-                <Button colorScheme="brand" width={"194px"}
+                <Button colorScheme="brand" width={"194px"} isDisabled={!pasted}
                   borderRadius={"2px"} onClick={importFromSeedphrase} >
                   Next
                 </Button>

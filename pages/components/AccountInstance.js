@@ -45,6 +45,16 @@ function AccountInstance({
   }, [])
 
   if (!account) return <></>;
+  if(((String(chain).localeCompare("mainnet") === 0)  || (String(chain).localeCompare("goerli") === 0) || (String(chain).localeCompare("bscMainNet") === 0) || (String(chain).localeCompare("bscTestNet") === 0)) && account?.network !== "evmChain") {
+    return <></>;
+  }
+  if(((String(chain).localeCompare("bitcoinTestNet") === 0)) && account?.network !== "bitcoinTest") {
+    return <></>;
+  }
+  if(((String(chain).localeCompare("bitcoin") === 0)) && account?.network !== "bitcoinMain") {
+    return <></>;
+  }
+  
   return (
     <>
       <>

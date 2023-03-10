@@ -3,11 +3,10 @@ import {
   Box,
   Button,
   Heading,
-  HStack,
-  Img,
+  HStack, IconButton,
+  Image, Img,
   Input,
-  Spinner,
-  Tab,
+  Spinner, Switch, Tab,
   TabList,
   TabPanel,
   TabPanels,
@@ -15,24 +14,12 @@ import {
   Text,
   useClipboard,
   useToast,
-  VStack,
-  Switch,
-  IconButton,
-  Image,
-} from "@chakra-ui/react";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
+  VStack
 } from "@chakra-ui/react";
 import * as bip39 from "@scure/bip39";
 import axios from "axios";
 import { hdkey } from "ethereumjs-wallet";
 import { parseEther } from "ethers/lib/utils";
-import Link from "next/link";
 import { QRCodeCanvas } from "qrcode.react";
 import { useEffect, useRef, useState } from "react";
 import Web3 from "web3";
@@ -42,7 +29,7 @@ import {
   getTransactions,
   getWeb3,
   prepareTransaction,
-  _signTransactionAndBroadcast,
+  _signTransactionAndBroadcast
 } from "../api/Transaction";
 import {
   arrayToPrivateKey,
@@ -50,7 +37,7 @@ import {
   generateBitcoinMainAddress,
   generateBitcoinMainAddressFromPrivateKey,
   generateBitcoinTestAddress,
-  generateBitcoinTestAddressFromPrivateKeyWIF,
+  generateBitcoinTestAddressFromPrivateKeyWIF
 } from "../api/Utilities";
 import AccountInstance from "./AccountInstance";
 import AssetTemplate from "./AssetTemplate";
@@ -101,7 +88,7 @@ function AccountManager({ mnemonic }) {
   const [notifications, setNotifications] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isSleeping, setIsSleeping] = useState(false);
-  const [isSwitchLoading,setIsSwitchLoading]=useState(false);
+  const [isSwitchLoading, setIsSwitchLoading] = useState(false);
   console.log("Sleeping: ", isSleeping);
   const web3 = useRef(null);
   const toast = useToast();
@@ -274,8 +261,8 @@ function AccountManager({ mnemonic }) {
     if (!selectedAccount || !selectedChain) {
       return 0;
     }
-    if(!isSwitchLoading)
-    loadingMessage == null && setLoadingMessage("Loading");
+    if (!isSwitchLoading)
+      loadingMessage == null && setLoadingMessage("Loading");
     web3.current = await getWeb3(selectedChain);
     // fetching latest transactions of selected account
     let trxs = await getTransactions(
@@ -325,7 +312,7 @@ function AccountManager({ mnemonic }) {
   const importAccount = () => {
     console.log("private key", privateKey);
     if (privateKey) {
-      
+
       (privateKey);
       setShowImportModal(false);
     }
@@ -337,8 +324,8 @@ function AccountManager({ mnemonic }) {
     updateAssets();
     // if(loadingMessage == null)
     // setImage()
-    
-    console.log("Cur:",selectedChain);
+
+    console.log("Cur:", selectedChain);
     if (selectedChain === "bitcoinTestNet" || selectedChain === "bitcoin") {
       setImage("./BTC.png");
     } else if (selectedChain === "mainnet" || selectedChain === "goerli") {
@@ -627,13 +614,26 @@ function AccountManager({ mnemonic }) {
                     // );
                     // setLoadingMessage("Switching");
                     setIsSwitchLoading(true);
-                    console.log(e.target, 'value')
                     console.log("Switching to " + capitalize(e.target.value));
                     setSelectedChain(e.target.value);
                     console.log("Changed to: ", selectedChain);
+                    if (((String(e.target.value).localeCompare("mainnet") === 0) || (String(e.target.value).localeCompare("goerli") === 0) || (String(e.target.value).localeCompare("bscMainNet") === 0) || (String(e.target.value).localeCompare("bscTestNet") === 0))) {
+                      let reqAcc = accounts.filter((x => x.network === "evmChain"))
+                      console.log(reqAcc[0]);
+                      setSelectedAccount(reqAcc[0])
+                    }
+                    if (((String(e.target.value).localeCompare("bitcoinTestNet") === 0))) {
+                      let reqAcc = accounts.filter((x => x.network === "bitcoinTest"))
+                      console.log(reqAcc);
+                      setSelectedAccount(reqAcc[0])
+                    }
+                    if (((String(e.target.value).localeCompare("bitcoin") === 0))) {
+                      let reqAcc = accounts.filter((x => x.network === "bitcoinMain"))
+                      console.log(reqAcc[0]);
+                      setSelectedAccount(reqAcc[0])
+                    }
                   }}
                   defaultValue={capitalize(selectedChain)}
-                  
                 >
                   {chains.map((chain) => {
                     return (
@@ -669,10 +669,10 @@ function AccountManager({ mnemonic }) {
           </HStack>
 
           <VStack spacing={10}>
-           { (isSwitchLoading) ?
-            <Spinner/>
-            : 
-            <Img height={"50px"} width={"50px"} src={image} />}
+            {(isSwitchLoading) ?
+              <Spinner />
+              :
+              <Img height={"50px"} width={"50px"} src={image} />}
             <Heading>
               {selectedAccount?.balance} {currencyOf[selectedChain]}
             </Heading>
@@ -685,7 +685,7 @@ function AccountManager({ mnemonic }) {
                   isDisabled={isSleeping}
                   icon={<Image src={"./buy-sell.png"} />}
                   onClick={() => setBuyIntent(true)}
-                  //onClick={() => <BuyMethods buyMethods={buyMethods}/>}
+                //onClick={() => <BuyMethods buyMethods={buyMethods}/>}
                 />
                 <Text>Buy/Sell</Text>
               </VStack>
@@ -789,9 +789,7 @@ function AccountManager({ mnemonic }) {
                       src={"./fingerprint.png"}
                     />
                   }
-                  onClick={() => {
-                    setShowImportModal(true);
-                  }}
+                  onClick={underDevelopmentToast}
                 />
                 <Text>Fingerprint</Text>
               </VStack>
@@ -806,7 +804,7 @@ function AccountManager({ mnemonic }) {
                       src={"./facerecog.png"}
                     />
                   }
-                  // onClick={() => { setShowImportModal(true) }}
+                // onClick={() => { setShowImportModal(true) }}
                 />
                 <Text>Face Recogition</Text>
               </VStack>
@@ -826,20 +824,38 @@ function AccountManager({ mnemonic }) {
               </VStack>
 
               <VStack spacing={5}>
-                <IconButton
-                  icon={
-                    <Image
-                      width={"81px"}
-                      height={"78px"}
-                      style={{ marginRight: "30px" }}
-                      src={"./sleeping_beauty_open.png"}
-                    />
-                  }
-                  onClick={() => {
-                    setIsSleeping(!isSleeping);
-                    console.log(isSleeping);
-                  }}
-                />
+                {isSleeping ?
+
+                  <IconButton
+                    icon={
+                      <Image
+                        width={"81px"}
+                        height={"78px"}
+                        style={{ marginRight: "30px" }}
+                        src={"./sleeping.png"}
+                      />
+                    }
+                    onClick={() => {
+                      setIsSleeping(!isSleeping);
+                      location.reload();
+                      console.log(isSleeping);
+                    }}
+                  /> :
+                  <IconButton
+                    icon={
+                      <Image
+                        width={"81px"}
+                        height={"78px"}
+                        style={{ marginRight: "30px" }}
+                        src={"./non-sleeping.png"}
+                      />
+                    }
+                    onClick={() => {
+                      setIsSleeping(!isSleeping);
+                      console.log(isSleeping);
+                    }}
+                  />
+                }
                 <Text>Sleeping Beauty</Text>
               </VStack>
             </HStack>
@@ -903,15 +919,15 @@ function AccountManager({ mnemonic }) {
               value={selectedAccount?.address}
               size={100}
               level={"H"}
-              // style={{ marginLeft: 92 }}
-              // imageSettings={
-              //   {
-              //     src: image,
-              //     height: 20,
-              //     width: 20,
-              //     // excavate: true
-              //   }
-              // }
+            // style={{ marginLeft: 92 }}
+            // imageSettings={
+            //   {
+            //     src: image,
+            //     height: 20,
+            //     width: 20,
+            //     // excavate: true
+            //   }
+            // }
             />
             <Text>{selectedAccount?.address} </Text>
             <HStack spacing={10}>
@@ -954,7 +970,7 @@ function AccountManager({ mnemonic }) {
             <Input
               type={"text"}
               style={{ color: "black" }}
-               maxWidth="750px" maxHeight="48px"
+              maxWidth="750px" maxHeight="48px"
               placeholder={"Destination Address"}
               onChange={(e) => {
                 setTransferAddress(e.target.value);
@@ -963,7 +979,7 @@ function AccountManager({ mnemonic }) {
             <Input
               type={"text"}
               style={{ color: "black" }}
-               maxWidth="750px" maxHeight="48px"
+              maxWidth="750px" maxHeight="48px"
               placeholder={"Amount to transfer"}
               onChange={(e) => {
                 setTransferAmount(e.target.value);

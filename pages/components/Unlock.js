@@ -10,12 +10,12 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
-function Unlock({ unlocker }) {
+function Unlock({ unlocker, firstTime }) {
   const [password, setPassword] = useState("");
   const [confirmingPassword, setConfirmingPassword] = useState(null);
   const [originalPassword, setOriginalPassword] = useState(null);
   const toast = useToast();
-  const [checkedItems, setCheckedItems] = useState([false, false])
+  const [checkedItems, setCheckedItems] = useState([false, false]);
 
   const allChecked = checkedItems.every(Boolean)
   const isIndeterminate = checkedItems.some(Boolean) && !allChecked
@@ -58,6 +58,7 @@ function Unlock({ unlocker }) {
       });
 
       unlocker(true);
+
     } else {
       Toast({
         title: `Authentication Error`,
@@ -118,7 +119,11 @@ function Unlock({ unlocker }) {
               colorScheme="brand"
               placeholder={"Confirm Password"}
               type={"password"}
-              onChange={(e) => setConfirmingPassword(e.target.value)}
+              onChange={(e) => {
+                setConfirmingPassword(e.target.value)
+                firstTime(true)
+              }
+              }
             />
             <Checkbox
               isChecked={allChecked}
