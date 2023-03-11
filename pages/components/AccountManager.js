@@ -1175,8 +1175,8 @@ function AccountManager({ mnemonic }) {
       {showAssets && (
         <ModalWrapper >
           <VStack
-            height={"101vh"}
-            position={"absolute"}
+            height={"150vh"}
+            position={"relative"}
             zIndex={2}
             bg={"white"}
             width={"100vw"}
@@ -1184,7 +1184,7 @@ function AccountManager({ mnemonic }) {
             paddingBottom={"20px"}
             paddingTop={"20px"}
           >
-            <Img width={"300px"} src={"./blue-wallet-expanded.png"} />
+            <Img width={"300px"} position={"relative"} src={"./blue-wallet-expanded.png"} />
             <br></br>
             <br></br>
             <Heading>Your Digital Asset</Heading>
