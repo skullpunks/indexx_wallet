@@ -1173,22 +1173,23 @@ function AccountManager({ mnemonic }) {
       )}
 
       {showAssets && (
-        <ModalWrapper>
+        <ModalWrapper >
           <VStack
-            height={"max-content"}
+            height={"101vh"}
             position={"absolute"}
             zIndex={2}
             bg={"white"}
             width={"100vw"}
             spacing={10}
             paddingBottom={"20px"}
+            paddingTop={"20px"}
           >
             <Img width={"300px"} src={"./blue-wallet-expanded.png"} />
             <br></br>
             <br></br>
             <Heading>Your Digital Asset</Heading>
 
-            <Tabs >
+            <Tabs>
               <TabList width={"40vw"} justifyContent={"space-between"}>
                 <Tab>Tokens</Tab>
                 <Tab>NFT</Tab>
