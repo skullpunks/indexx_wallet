@@ -1175,13 +1175,13 @@ function AccountManager({ mnemonic }) {
       {showAssets && (
         <ModalWrapper >
           <VStack
-            height={"150vh"}
+            height={"max-content"}
             position={"relative"}
             zIndex={2}
             bg={"white"}
             width={"100vw"}
             spacing={10}
-            paddingBottom={"20px"}
+            // marginBottom={"140px"}
             paddingTop={"20px"}
           >
             <Img width={"300px"} position={"relative"} src={"./blue-wallet-expanded.png"} />
@@ -1215,7 +1215,8 @@ function AccountManager({ mnemonic }) {
                   </VStack>
                 </TabPanel>
                 <TabPanel>
-                  <VStack spacing={10}>
+                  <VStack spacing={10}
+                  >
                     {transactions.length == 0 ? (
                       <>
                         <Text>No NFTs to be shown</Text>
@@ -1240,6 +1241,7 @@ function AccountManager({ mnemonic }) {
               </TabPanels>
             </Tabs>
             <Button
+              
               style={{ width: "270px" }}
               color="white"
               variant="solid"
