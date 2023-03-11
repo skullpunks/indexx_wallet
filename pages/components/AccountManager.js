@@ -274,6 +274,7 @@ function AccountManager({ mnemonic }) {
     // fetching balance of the user
     let balance = await checkBalance(selectedAccount.address);
     setSelectedAccount({ ...selectedAccount, balance });
+
     setTimeout(() => {
       setLoadingMessage(null);
     }, 1000);
@@ -448,14 +449,15 @@ function AccountManager({ mnemonic }) {
               <>
                 <ModalWrapper>
                   <VStack
-                    height={"75vh"}
-                    position={"absolute"}
+                    // height={"max-content"}
+                    // position={"relative"}
                     zIndex={2}
                     bg={"white"}
-                    width={"50vw"}
+                    width={"70vw"}
                     borderRadius={"20px"}
                     paddingTop={"5vh"}
-                    overflowY={"scroll"}
+                    paddingBottom={"40px"}
+                    // overflowY={"scroll"}
                   >
                     {accounts?.map((account) => {
                       return (
@@ -1258,8 +1260,10 @@ function AccountManager({ mnemonic }) {
       {showTxs && (
         <ModalWrapper>
           <VStack
-            height={"101vh"}
-            position={"absolute"}
+            // height={"101vh"}
+            // position={"absolute"}
+            height={"max-content"}
+            position={"relative"}
             zIndex={2}
             bg={"white"}
             width={"100vw"}
@@ -1310,13 +1314,14 @@ function AccountManager({ mnemonic }) {
       {showNotifications && (
         <ModalWrapper>
           <VStack
-            height={"101vh"}
-            position={"absolute"}
+            // height={"101vh"}
+            // position={"absolute"}
             zIndex={2}
             bg={"white"}
-            width={"100vw"}
+            width={"70vw"}
             spacing={10}
             paddingBottom={"20px"}
+
           >
             <Img width={"300px"} src={"./blue-wallet-expanded.png"} />
             <br></br>
@@ -1336,6 +1341,7 @@ function AccountManager({ mnemonic }) {
                           key={asset.hash.toString()}
                           asset={asset}
                           selectedChain={selectedChain}
+                          // index={}
                         />
                       );
                     })}

@@ -15,7 +15,7 @@ function ModalWrapper(props) {
         width={"98vw"}
         top={"0"}
         left={"0"}
-        paddingBottom={"400px"}
+        paddingBottom={"450px"}
       >
         {Children}
       </Center>

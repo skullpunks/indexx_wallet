@@ -1,4 +1,4 @@
-import { Box, Button, HStack, Img, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Checkbox, HStack, Img, Text, VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { getMinimalAddress } from "./AccountInstance";
 import { capitalize } from "../api/Utilities";
@@ -7,7 +7,9 @@ function NotificationInstance({ asset, selectedChain }) {
   const [explorerURL, setExplorerURL] = useState("");
   useEffect(() => {
     if (String(selectedChain).localeCompare("bitcoinTestNet") === 0) {
-      setExplorerURL("https://live.blockcypher.com/btc-testnet/tx/" + asset?.hash);
+      setExplorerURL(
+        "https://live.blockcypher.com/btc-testnet/tx/" + asset?.hash
+      );
     } else if (String(selectedChain).localeCompare("bitcoin") === 0) {
       setExplorerURL("https://live.blockcypher.com/btc/tx/" + asset?.hash);
     } else if (String(selectedChain).localeCompare("mainnet") === 0) {
@@ -19,17 +21,16 @@ function NotificationInstance({ asset, selectedChain }) {
     } else if (String(selectedChain).localeCompare("bscTestNet") === 0) {
       setExplorerURL("https://testnet.bscscan.com/tx/" + asset?.hash);
     }
-
-  }, [])
+  }, []);
   if (!asset) {
-    return <></> }
-    else {
-      console.log('asset', asset)
-    } ;
+    return <></>;
+  } else {
+    console.log("asset", asset);
+  }
   return (
     <HStack
       key={asset.hash.toString()}
-      width={"40vw"}
+      width={"max-content"}
       borderRadius={"5px"}
       bg={"white"}
       color={"black"}
@@ -38,9 +39,14 @@ function NotificationInstance({ asset, selectedChain }) {
       justify={"space-between"}
     >
       <Box bg={"black"} color={"white"} borderRadius={"50%"} padding={"10px"}>
-        {(String(selectedChain).localeCompare("goerli") === 0 || String(selectedChain).localeCompare("mainnet") === 0) ?
-          (asset.asset === null ? String(asset.category).toUpperCase() : asset.asset)
-          : (asset.contractAddress === "" ? "BNB" : "BEP20")}
+        {String(selectedChain).localeCompare("goerli") === 0 ||
+        String(selectedChain).localeCompare("mainnet") === 0
+          ? asset.asset === null
+            ? String(asset.category).toUpperCase()
+            : asset.asset
+          : asset.contractAddress === ""
+          ? "BNB"
+          : "BEP20"}
       </Box>
 
       <VStack align={"left"}>
@@ -57,7 +63,14 @@ function NotificationInstance({ asset, selectedChain }) {
         </HStack>
         <Text fontWeight={"700"}>{getMinimalAddress(asset.to)}</Text>
       </VStack>
-      <div
+      {/* todo */}
+      <Checkbox size="lg" colorScheme="blue" onChange={(event)=>{console.log(event.target.checked)}}>
+        Seen
+      </Checkbox>
+      <Button width={"max-content"} onClick={() => window.open(explorerURL)} colorScheme="brand">
+          View Details
+        </Button>
+      {/* <div
       // style={{
       //   marginLeft: "185px"
       // }}
@@ -65,7 +78,7 @@ function NotificationInstance({ asset, selectedChain }) {
         <Button onClick={() => window.open(explorerURL)} colorScheme="brand">
           View Details
         </Button>
-      </div>
+      </div> */}
     </HStack>
   );
 }
