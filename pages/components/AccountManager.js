@@ -1175,7 +1175,7 @@ function AccountManager({ mnemonic }) {
       {showAssets && (
         <ModalWrapper>
           <VStack
-            height={"101vh"}
+            height={"max-content"}
             position={"absolute"}
             zIndex={2}
             bg={"white"}
@@ -1188,13 +1188,13 @@ function AccountManager({ mnemonic }) {
             <br></br>
             <Heading>Your Digital Asset</Heading>
 
-            <Tabs>
+            <Tabs >
               <TabList width={"40vw"} justifyContent={"space-between"}>
                 <Tab>Tokens</Tab>
                 <Tab>NFT</Tab>
               </TabList>
 
-              <TabPanels>
+              <TabPanels >
                 <TabPanel>
                   <VStack pt={"5vh"} spacing={10}>
                     {tokens[selectedChain].length > 0 &&
