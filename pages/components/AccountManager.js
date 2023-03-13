@@ -724,7 +724,10 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image src={"./buy-sell.png"} />}
+                  icon={<Image 
+                    width={"81px"}
+                    height={"78px"}
+                    src={"./buysell1.png"} />}
                   onClick={() => setBuyIntent(true)}
                 //onClick={() => <BuyMethods buyMethods={buyMethods}/>}
                 />
@@ -733,7 +736,10 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image src={"./receive.png"} />}
+                  icon={<Image 
+                    width={"81px"}
+                    height={"78px"}
+                    src={"./receive1.png"} />}
                   onClick={() => {
                     setReceiveIntent(true);
                   }}
@@ -744,7 +750,10 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image src={"./send.png"} />}
+                  icon={<Image 
+                    width={"81px"}
+                    height={"78px"}
+                    src={"./send1.png"} />}
                   onClick={() => {
                     setSendIntent(true);
                   }}
@@ -755,7 +764,10 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image src={"./swap.png"} />}
+                  icon={<Image 
+                    width={"81px"}
+                    height={"78px"}
+                    src={"./swap1.png"} />}
                   onClick={() => window.open("https://dex.indexx.ai")}
                 />
                 <Text>Swap</Text>
@@ -767,7 +779,10 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image src={"./import.png"} />}
+                  icon={<Image 
+                    width={"81px"}
+                    height={"78px"}
+                    src={"./add1.png"} />}
                   onClick={() => {
                     setShowImportModal(true);
                   }}
@@ -781,7 +796,10 @@ function AccountManager({ mnemonic }) {
                   icon={
                     <>
                       {" "}
-                      <Image src={"./notify.png"} />
+                      <Image 
+                       width={"81px"}
+                       height={"78px"}
+                      src={"./notif1.png"} />
                       {/* <Box as={'span'} color={'white'} position={'absolute'} top={'-45px'} left={'-7px'} fontSize={'1.4rem'}
                       bgColor={'#F66137'} borderRadius={'llg'} zIndex={9999} p={'1px'}>
                       {1}
@@ -798,7 +816,10 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image src={"./assets1.png"} />}
+                  icon={<Image 
+                    width={"81px"}
+                    height={"78px"}
+                    src={"./assets1.png"} />}
                   onClick={() => {
                     setShowAssets(true);
                   }}
@@ -809,7 +830,10 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image src={"./txs.png"} />}
+                  icon={<Image 
+                    width={"81px"}
+                    height={"78px"}
+                    src={"./transactions1.png"} />}
                   onClick={() => {
                     setShowTxs(true);
                   }}
@@ -827,7 +851,7 @@ function AccountManager({ mnemonic }) {
                     <Image
                       width={"81px"}
                       height={"78px"}
-                      src={"./fingerprint.png"}
+                      src={"./fingerprint1.png"}
                     />
                   }
                   onClick={underDevelopmentToast}
@@ -842,7 +866,7 @@ function AccountManager({ mnemonic }) {
                     <Image
                       width={"81px"}
                       height={"78px"}
-                      src={"./facerecog.png"}
+                      src={"./facerecog1.png"}
                     />
                   }
                 // onClick={() => { setShowImportModal(true) }}
@@ -854,7 +878,7 @@ function AccountManager({ mnemonic }) {
                 <IconButton
                   isDisabled={isSleeping}
                   icon={
-                    <Image width={"81px"} height={"78px"} src={"./scan.png"} />
+                    <Image width={"81px"} height={"78px"} src={"./scan1.png"} />
                   }
                   onClick={() => {
                     console.log(isSleeping);
@@ -873,7 +897,7 @@ function AccountManager({ mnemonic }) {
                         width={"81px"}
                         height={"78px"}
                         style={{ marginRight: "30px" }}
-                        src={"./sleeping.png"}
+                        src={"./sleeping_beaut_01.png"}
                       />
                     }
                     onClick={() => {
@@ -888,7 +912,7 @@ function AccountManager({ mnemonic }) {
                         width={"81px"}
                         height={"78px"}
                         style={{ marginRight: "30px" }}
-                        src={"./non-sleeping.png"}
+                        src={"./sleeping_beaut_02.png"}
                       />
                     }
                     onClick={() => {

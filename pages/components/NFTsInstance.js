@@ -128,7 +128,8 @@ function NFTsInstance({ asset, selectedChain }) {
 
 
         <IconButton
-          icon={<Image src={"./etherscan.png"} width={"30px"} height={"30px"}/>}
+          icon={<Image 
+            src={"./scan1.png"} width={"30px"} height={"30px"}/>}
           onClick={() => window.open(explorerURL)}
         //onClick={() => <BuyMethods buyMethods={buyMethods}/>}
         />
