@@ -8,7 +8,8 @@ export async function getTransactions(
   address,
   setter,
   setter2,
-  setCountOfUnreadNotifications
+  countOfUnreadNotifications,
+  setCountOfUnreadNotifications,
 ) {
   const config = alchemyApps[network];
   if (network === "bscTestNet" || network === "bscMainNet") {
@@ -46,18 +47,22 @@ export async function getTransactions(
     });
 
     let t = {};
-    let countOfUnreadNotifications = 0;
+    let curCountOfUnreadNotifications = 0;
 
     for (const item of filteredData) {
       t[item.hash] = item.isChecked;
-      if (!item.isChecked) countOfUnreadNotifications++;
+      if (!item.isChecked) curCountOfUnreadNotifications++;
     }
     t = JSON.stringify(t);
     console.log("Txn setting stringfy", t);
 
     localStorage.setItem("checkBoxVal", t);
     setter2(filteredData);
-    setCountOfUnreadNotifications(countOfUnreadNotifications);
+    // setCountOfUnreadNotifications[network]=countOfUnreadNotifications;
+    console.log("notificaitons netw in gett",network,countOfUnreadNotifications)
+    setCountOfUnreadNotifications({
+      ...countOfUnreadNotifications,[network]:curCountOfUnreadNotifications
+    })
     return arr;
   } else if (network === "bitcoin" || network === "bitcoinTestNet") {
     setter2([]);

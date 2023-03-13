@@ -91,12 +91,18 @@ function AccountManager({ mnemonic }) {
   const [showTxs, setShowTxs] = useState(false);
   const [notifications, setNotifications] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [countOfUnreadNotifications, setCountOfUnreadNotifications] =
-    useState(0);
+  const [countOfUnreadNotifications, setCountOfUnreadNotifications] = useState({
+    mainnet: 0,
+    goerli: 0,
+    bitcoin:0,
+    bitcoinTestNet: 0,
+    bscMainNet: 0,
+    bscTestNet: 0,
+  });
 
   const [isSleeping, setIsSleeping] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
-  console.log("Notificaiton: ", countOfUnreadNotifications);
+  console.log("Notificaiton: ",selectedChain, countOfUnreadNotifications[selectedChain] );
   const web3 = useRef(null);
   const toast = useToast();
   function Toast(message) {
@@ -277,6 +283,7 @@ function AccountManager({ mnemonic }) {
       selectedAccount.address,
       setTransactions,
       setNotifications,
+      countOfUnreadNotifications,
       setCountOfUnreadNotifications
     );
     // fetching balance of the user
@@ -379,6 +386,7 @@ function AccountManager({ mnemonic }) {
       selectedAccount.address,
       setTransactions,
       setNotifications,
+      countOfUnreadNotifications,
       setCountOfUnreadNotifications
     );
   }, [selectedAccount]);
@@ -808,15 +816,13 @@ function AccountManager({ mnemonic }) {
                   isDisabled={isSleeping}
                   icon={
                     <>
-                     
-                      {countOfUnreadNotifications > 0 ? (
+                      {countOfUnreadNotifications[selectedChain] > 0 ? (
                         <Image
                           width={"88px"}
                           height={"89px"}
                           src={"./notification_unread.png"}
                         />
                       ) : (
-                        
                         <Image
                           width={"81px"}
                           height={"78px"}
