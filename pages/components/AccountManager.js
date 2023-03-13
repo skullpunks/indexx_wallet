@@ -91,7 +91,8 @@ function AccountManager({ mnemonic }) {
   const [showTxs, setShowTxs] = useState(false);
   const [notifications, setNotifications] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [countOfUnreadNotifications, setCountOfUnreadNotifications] = useState(0);
+  const [countOfUnreadNotifications, setCountOfUnreadNotifications] =
+    useState(0);
 
   const [isSleeping, setIsSleeping] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
@@ -732,10 +733,13 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image 
-                    width={"81px"}
-                    height={"78px"}
-                    src={"./buysell1.png"} />}
+                  icon={
+                    <Image
+                      width={"81px"}
+                      height={"78px"}
+                      src={"./buysell1.png"}
+                    />
+                  }
                   onClick={() => setBuyIntent(true)}
                   //onClick={() => <BuyMethods buyMethods={buyMethods}/>}
                 />
@@ -744,10 +748,13 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image 
-                    width={"81px"}
-                    height={"78px"}
-                    src={"./receive1.png"} />}
+                  icon={
+                    <Image
+                      width={"81px"}
+                      height={"78px"}
+                      src={"./receive1.png"}
+                    />
+                  }
                   onClick={() => {
                     setReceiveIntent(true);
                   }}
@@ -758,10 +765,9 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image 
-                    width={"81px"}
-                    height={"78px"}
-                    src={"./send1.png"} />}
+                  icon={
+                    <Image width={"81px"} height={"78px"} src={"./send1.png"} />
+                  }
                   onClick={() => {
                     setSendIntent(true);
                   }}
@@ -772,10 +778,9 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image 
-                    width={"81px"}
-                    height={"78px"}
-                    src={"./swap1.png"} />}
+                  icon={
+                    <Image width={"81px"} height={"78px"} src={"./swap1.png"} />
+                  }
                   onClick={() => window.open("https://dex.indexx.ai")}
                 />
                 <Text>Swap</Text>
@@ -787,10 +792,9 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image 
-                    width={"81px"}
-                    height={"78px"}
-                    src={"./add1.png"} />}
+                  icon={
+                    <Image width={"81px"} height={"78px"} src={"./add1.png"} />
+                  }
                   onClick={() => {
                     setShowImportModal(true);
                   }}
@@ -803,11 +807,21 @@ function AccountManager({ mnemonic }) {
                   isDisabled={isSleeping}
                   icon={
                     <>
-                      {" "}
-                      <Image 
-                       width={"81px"}
-                       height={"78px"}
-                      src={"./notif1.png"} />
+                     
+                      {countOfUnreadNotifications > 0 ? (
+                        <Image
+                          width={"88px"}
+                          height={"89px"}
+                          src={"./notification_unread.png"}
+                        />
+                      ) : (
+                        
+                        <Image
+                          width={"81px"}
+                          height={"78px"}
+                          src={"./notif1.png"}
+                        />
+                      )}
                       {/* <Box as={'span'} color={'white'} position={'absolute'} top={'-45px'} left={'-7px'} fontSize={'1.4rem'}
                       bgColor={'#F66137'} borderRadius={'llg'} zIndex={9999} p={'1px'}>
                       {1}
@@ -825,10 +839,13 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image 
-                    width={"81px"}
-                    height={"78px"}
-                    src={"./assets1.png"} />}
+                  icon={
+                    <Image
+                      width={"81px"}
+                      height={"78px"}
+                      src={"./asset1.png"}
+                    />
+                  }
                   onClick={() => {
                     setShowAssets(true);
                   }}
@@ -839,10 +856,13 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image 
-                    width={"81px"}
-                    height={"78px"}
-                    src={"./transactions1.png"} />}
+                  icon={
+                    <Image
+                      width={"81px"}
+                      height={"78px"}
+                      src={"./transactions1.png"}
+                    />
+                  }
                   onClick={() => {
                     setShowTxs(true);
                   }}

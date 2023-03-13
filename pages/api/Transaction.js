@@ -44,7 +44,7 @@ export async function getTransactions(
             : false,
       };
     });
-    
+
     let t = {};
     let countOfUnreadNotifications = 0;
 
@@ -61,6 +61,7 @@ export async function getTransactions(
     return arr;
   } else if (network === "bitcoin" || network === "bitcoinTestNet") {
     setter2([]);
+    setCountOfUnreadNotifications(0);
   } else {
     const alchemy = new Alchemy(config);
     const to_trxs = await alchemy.core.getAssetTransfers({
