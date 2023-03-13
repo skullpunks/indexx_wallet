@@ -3,10 +3,14 @@ import {
   Box,
   Button,
   Heading,
-  HStack, IconButton,
-  Image, Img,
+  HStack,
+  IconButton,
+  Image,
+  Img,
   Input,
-  Spinner, Switch, Tab,
+  Spinner,
+  Switch,
+  Tab,
   TabList,
   TabPanel,
   TabPanels,
@@ -14,7 +18,7 @@ import {
   Text,
   useClipboard,
   useToast,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import * as bip39 from "@scure/bip39";
 import axios from "axios";
@@ -29,7 +33,7 @@ import {
   getTransactions,
   getWeb3,
   prepareTransaction,
-  _signTransactionAndBroadcast
+  _signTransactionAndBroadcast,
 } from "../api/Transaction";
 import {
   arrayToPrivateKey,
@@ -37,7 +41,7 @@ import {
   generateBitcoinMainAddress,
   generateBitcoinMainAddressFromPrivateKey,
   generateBitcoinTestAddress,
-  generateBitcoinTestAddressFromPrivateKeyWIF
+  generateBitcoinTestAddressFromPrivateKeyWIF,
 } from "../api/Utilities";
 import AccountInstance from "./AccountInstance";
 import AssetTemplate from "./AssetTemplate";
@@ -87,9 +91,11 @@ function AccountManager({ mnemonic }) {
   const [showTxs, setShowTxs] = useState(false);
   const [notifications, setNotifications] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [countOfUnreadNotifications, setCountOfUnreadNotifications] = useState(0);
+
   const [isSleeping, setIsSleeping] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
-  console.log("Sleeping: ", isSleeping);
+  console.log("Notificaiton: ", countOfUnreadNotifications);
   const web3 = useRef(null);
   const toast = useToast();
   function Toast(message) {
@@ -269,7 +275,8 @@ function AccountManager({ mnemonic }) {
       selectedChain,
       selectedAccount.address,
       setTransactions,
-      setNotifications
+      setNotifications,
+      setCountOfUnreadNotifications
     );
     // fetching balance of the user
     let balance = await checkBalance(selectedAccount.address);
@@ -369,7 +376,8 @@ function AccountManager({ mnemonic }) {
       selectedChain,
       selectedAccount.address,
       setTransactions,
-      setNotifications
+      setNotifications,
+      setCountOfUnreadNotifications
     );
   }, [selectedAccount]);
 
@@ -726,7 +734,7 @@ function AccountManager({ mnemonic }) {
                   isDisabled={isSleeping}
                   icon={<Image src={"./buy-sell.png"} />}
                   onClick={() => setBuyIntent(true)}
-                //onClick={() => <BuyMethods buyMethods={buyMethods}/>}
+                  //onClick={() => <BuyMethods buyMethods={buyMethods}/>}
                 />
                 <Text>Buy/Sell</Text>
               </VStack>
@@ -788,7 +796,8 @@ function AccountManager({ mnemonic }) {
                     </Box> */}
                     </>
                   }
-                  onClick={() => {
+                  onClick={async () => {
+                    await updateAssets();
                     setShowNotifications(true);
                   }}
                 />
@@ -845,7 +854,7 @@ function AccountManager({ mnemonic }) {
                       src={"./facerecog.png"}
                     />
                   }
-                // onClick={() => { setShowImportModal(true) }}
+                  // onClick={() => { setShowImportModal(true) }}
                 />
                 <Text>Face Recogition</Text>
               </VStack>
@@ -865,8 +874,7 @@ function AccountManager({ mnemonic }) {
               </VStack>
 
               <VStack spacing={5}>
-                {isSleeping ?
-
+                {isSleeping ? (
                   <IconButton
                     icon={
                       <Image
@@ -881,7 +889,8 @@ function AccountManager({ mnemonic }) {
                       location.reload();
                       console.log(isSleeping);
                     }}
-                  /> :
+                  />
+                ) : (
                   <IconButton
                     icon={
                       <Image
@@ -896,7 +905,7 @@ function AccountManager({ mnemonic }) {
                       console.log(isSleeping);
                     }}
                   />
-                }
+                )}
                 <Text>Sleeping Beauty</Text>
               </VStack>
             </HStack>
@@ -963,15 +972,15 @@ function AccountManager({ mnemonic }) {
               value={selectedAccount?.address}
               size={100}
               level={"H"}
-            // style={{ marginLeft: 92 }}
-            // imageSettings={
-            //   {
-            //     src: image,
-            //     height: 20,
-            //     width: 20,
-            //     // excavate: true
-            //   }
-            // }
+              // style={{ marginLeft: 92 }}
+              // imageSettings={
+              //   {
+              //     src: image,
+              //     height: 20,
+              //     width: 20,
+              //     // excavate: true
+              //   }
+              // }
             />
             <Text>{selectedAccount?.address} </Text>
             <HStack spacing={10}>
@@ -1175,7 +1184,7 @@ function AccountManager({ mnemonic }) {
       )}
 
       {showAssets && (
-        <ModalWrapper >
+        <ModalWrapper>
           <VStack
             height={"max-content"}
             position={"relative"}
@@ -1186,7 +1195,11 @@ function AccountManager({ mnemonic }) {
             // marginBottom={"140px"}
             paddingTop={"20px"}
           >
-            <Img width={"300px"} position={"relative"} src={"./blue-wallet-expanded.png"} />
+            <Img
+              width={"300px"}
+              position={"relative"}
+              src={"./blue-wallet-expanded.png"}
+            />
             <br></br>
             <br></br>
             <Heading>Your Digital Asset</Heading>
@@ -1197,7 +1210,7 @@ function AccountManager({ mnemonic }) {
                 <Tab>NFT</Tab>
               </TabList>
 
-              <TabPanels >
+              <TabPanels>
                 <TabPanel>
                   <VStack pt={"5vh"} spacing={10}>
                     {tokens[selectedChain].length > 0 &&
@@ -1217,8 +1230,7 @@ function AccountManager({ mnemonic }) {
                   </VStack>
                 </TabPanel>
                 <TabPanel>
-                  <VStack spacing={10}
-                  >
+                  <VStack spacing={10}>
                     {transactions.length == 0 ? (
                       <>
                         <Text>No NFTs to be shown</Text>
@@ -1243,7 +1255,6 @@ function AccountManager({ mnemonic }) {
               </TabPanels>
             </Tabs>
             <Button
-              
               style={{ width: "270px" }}
               color="white"
               variant="solid"
@@ -1321,27 +1332,31 @@ function AccountManager({ mnemonic }) {
             width={"70vw"}
             spacing={10}
             paddingBottom={"20px"}
-
           >
             <Img width={"300px"} src={"./blue-wallet-expanded.png"} />
             <br></br>
             <br></br>
             <VStack spacing={10}>
               <Heading>Notifications</Heading>
-              {transactions.length == 0 ? (
+              {notifications.length === 0 ? (
                 <>
                   <Text>No Recent Notifications</Text>
                 </>
               ) : (
                 <>
                   <VStack spacing={5}>
-                    {transactions.map((asset) => {
+                    {notifications.map((asset) => {
                       return (
                         <NotificationInstance
                           key={asset.hash.toString()}
                           asset={asset}
                           selectedChain={selectedChain}
-                          // index={}
+                          countOfUnreadNotifications={
+                            countOfUnreadNotifications
+                          }
+                          setCountOfUnreadNotifications={
+                            setCountOfUnreadNotifications
+                          }
                         />
                       );
                     })}

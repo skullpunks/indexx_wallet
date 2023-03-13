@@ -1,9 +1,25 @@
-import { Box, Button, Checkbox, HStack, Img, Text, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Checkbox,
+  HStack,
+  Img,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { getMinimalAddress } from "./AccountInstance";
 import { capitalize } from "../api/Utilities";
 
-function NotificationInstance({ asset, selectedChain }) {
+// function NotificationInstance({  id, isChecked, handleCheckboxChange }) {
+// function NotificationInstance({ asset, selectedChain, id, isChecked, handleCheckboxChange }) {
+function NotificationInstance({
+  asset,
+  selectedChain,
+  countOfUnreadNotifications,
+  setCountOfUnreadNotifications,
+}) {
+  // console.log(id,isChecked);
   const [explorerURL, setExplorerURL] = useState("");
   useEffect(() => {
     if (String(selectedChain).localeCompare("bitcoinTestNet") === 0) {
@@ -64,12 +80,39 @@ function NotificationInstance({ asset, selectedChain }) {
         <Text fontWeight={"700"}>{getMinimalAddress(asset.to)}</Text>
       </VStack>
       {/* todo */}
-      <Checkbox size="lg" colorScheme="blue" onChange={(event)=>{console.log(event.target.checked)}}>
+      <Checkbox
+        size="lg"
+        colorScheme="blue"
+        defaultChecked={asset.isChecked}
+        onChange={(event) => {
+          console.log("check: ", event.target.checked);
+          if (event.target.checked)
+            setCountOfUnreadNotifications(countOfUnreadNotifications - 1);
+          else 
+          setCountOfUnreadNotifications(countOfUnreadNotifications + 1);
+          let checkBoxVals = localStorage.getItem("checkBoxVal");
+          console.log("Txn getting", checkBoxVals);
+          checkBoxVals = JSON.parse(checkBoxVals);
+          console.log("Txn getting parsed ", checkBoxVals);
+          checkBoxVals[asset.hash] = event.target.checked;
+
+          localStorage.setItem("checkBoxVal", JSON.stringify(checkBoxVals));
+          console.log("Notificaiton check Prev: ", countOfUnreadNotifications);
+          // }
+        }}
+      >
         Seen
       </Checkbox>
-      <Button width={"max-content"} onClick={() => window.open(explorerURL)} colorScheme="brand">
-          View Details
-        </Button>
+      {/* <Checkbox key={id} id={id} isChecked={isChecked} onChange={handleCheckboxChange}>
+       seen
+      </Checkbox> */}
+      <Button
+        width={"max-content"}
+        onClick={() => window.open(explorerURL)}
+        colorScheme="brand"
+      >
+        View Details
+      </Button>
       {/* <div
       // style={{
       //   marginLeft: "185px"
