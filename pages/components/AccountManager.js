@@ -329,6 +329,7 @@ function AccountManager({ mnemonic }) {
   // use Effects
   /**/
   useEffect(() => {
+    setIsSwitchLoading(true);
     updateAssets();
     // if(loadingMessage == null)
     // setImage()
@@ -843,7 +844,7 @@ function AccountManager({ mnemonic }) {
                     <Image
                       width={"81px"}
                       height={"78px"}
-                      src={"./asset1.png"}
+                      src={"./assets1.png"}
                     />
                   }
                   onClick={() => {
