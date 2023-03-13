@@ -274,8 +274,8 @@ function AccountManager({ mnemonic }) {
     if (!selectedAccount || !selectedChain) {
       return 0;
     }
-    if (!isSwitchLoading)
-      loadingMessage == null && setLoadingMessage("Loading");
+    // if (!isSwitchLoading)
+    //   loadingMessage == null && setLoadingMessage("Loading");
     web3.current = await getWeb3(selectedChain);
     // fetching latest transactions of selected account
     let trxs = await getTransactions(
