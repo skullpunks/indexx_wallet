@@ -24,6 +24,8 @@ const SeedPhraseManager = () => {
   const [showImportModal, setShowImportModal] = useState(false);
   const [loader, setLoader] = useState(false);
   const [showSeedPhrase, setShowSeedPhrase] = useState(false);
+  // const [createdUsingSeed, setCreatedUsingSeed] = useState(false);
+  // const [createdUsingFace, setCreatedUsingFace] = useState(false);
   // const [faceIO,setFaceIO]=useState();
   const [faceIoObject, setFaceIoObect] = useState();
   let faceioInstance = null;
@@ -100,6 +102,7 @@ const SeedPhraseManager = () => {
 
   const handleRegister = async () => {
     console.log("Handle face auth")
+    localStorage.setItem("createdUsingFace", true);
     let faceio;
     if (!faceIoObject) {
       faceio = new faceIO("fioa408b")
@@ -130,23 +133,13 @@ const SeedPhraseManager = () => {
 			Age Approximation: ${userInfo.details.age}`
       );
       console.log(userInfo);
-      /*
-            // Generate a 128-bit random number from the unique ID
-            const randomBits = bip39.mnemonicToEntropy(userInfo?.facialId);
-      
-            // Convert the random bits to a 12-word mnemonic
-            const mnemonic = bip39.entropyToMnemonic(randomBits);
-            console.log('mnemonic', mnemonic);
-      
-            setSeedPhrase(newSeedPhrase);
-            localStorage.setItem("seedPhrase", newSeedPhrase); */
-
       const newSeedPhrase = bip39.generateMnemonic(wordlist);
       // const newSeedPhrase =
       //   " asd adsdasdaasdas d asd asd sa das d as das d asd sda sdasdasd asd";
       setSeedPhrase(newSeedPhrase);
       setShowSeedPhrase(true);
       localStorage.setItem("seedPhrase", newSeedPhrase);
+      localStorage.setItem("facialId", userInfo.facialId)
       // handle success, save the facial ID, redirect to dashboard...
     }).catch(errCode => {
       console.log(errCode)
@@ -325,7 +318,10 @@ const SeedPhraseManager = () => {
                     </Button>
                     <Button
                       colorScheme="brand"
-                      onClick={() => setShowSeedPhrase(true)}
+                      onClick={() => {
+                        localStorage.setItem("createdUsingSeed", true),
+                          setShowSeedPhrase(true)
+                      }}
                     > Create using Seedphrase</Button>
                   </Wrap>
                 </VStack>

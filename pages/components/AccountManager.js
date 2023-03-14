@@ -71,6 +71,8 @@ function AccountManager({ mnemonic }) {
   const [showAccounts, setShowAccounts] = useState(false);
   const [showAccountDetails, setShowAccountDetails] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [selectedImported, setSelectedImported] = useState(null);
+  const [isSelectedImported, setIsSelectedImported] = useState(false);
   const [accounts, setAccounts] = useState([]);
   const [buyIntent, setBuyIntent] = useState(false);
   const [receiveIntent, setReceiveIntent] = useState(false);
@@ -120,6 +122,14 @@ function AccountManager({ mnemonic }) {
     Toast({
       title: `Under Development`,
       description: `We are working on it.\nIt will be ready soon.\nThank you for trying out`,
+      type: "info",
+    });
+  }
+
+  function underBitcoinDevelopmentToast() {
+    Toast({
+      title: `No Assets avaliable`,
+      description: `Bitcoin network does not have an assets to shown. Odinals will be ready soon.\nThank you for trying out`,
       type: "info",
     });
   }
@@ -271,6 +281,63 @@ function AccountManager({ mnemonic }) {
     }
   };
 
+  const generateAccountsForImport = async (privateKey, chain) => {
+    if (
+      String(privateKey).startsWith("0x") ||
+      String(privateKey).length === 64
+    ) {
+      let _accounts = accounts;
+      if (chain === "mainnet" || chain === "goeril" || chain === "bscMainNet" || chain === "bscTestNet") {
+        let addressObj = new Web3().eth.accounts.privateKeyToAccount(
+          "0x" + privateKey
+        );
+        let _address = addressObj.address;
+        let balance = await checkBalance(_address);
+        let _accountsObject = {
+          name: "Account " + (_accounts.length + 1),
+          avatar: "./account.png",
+          balance,
+          address: _address,
+          privateKey: addressObj.privateKey,
+          network: "evmChain",
+          isImported: true,
+        };
+        _accounts.push(_accountsObject);
+      } else if (chain === "bitcoinTestNet") {
+        //Bitcoin test account and main net account
+        const address = generateBitcoinTestAddressFromPrivateKeyWIF(privateKey);
+        console.log(address);
+        let _accountsObjectTest = {
+          name: "Account " + (_accounts.length + 1),
+          avatar: "./account.png",
+          balance,
+          address: address.address,
+          privateKey: address.privateKey,
+          network: "bitcoinTest",
+          isImported: false,
+        };
+        _accounts.push(_accountsObjectTest);
+      } else if (chain === "bitcoin") {
+        //MainNet
+        const mainAddress = generateBitcoinMainAddressFromPrivateKey(privateKey);
+        console.log(mainAddress);
+        let _accountsObjectMain = {
+          name: "Account " + (_accounts.length + 1),
+          avatar: "./account.png",
+          balance,
+          address: mainAddress.address,
+          privateKey: mainAddress.privateKey,
+          network: "bitcoinMain",
+          isImported: false,
+        };
+        _accounts.push(_accountsObjectMain);
+      }
+      setSelectedAccount(_accounts[0]);
+      setAccounts(_accounts);
+      return _accounts;
+    }
+  }
+
   async function updateAssets() {
     if (!selectedAccount || !selectedChain) {
       return 0;
@@ -327,9 +394,10 @@ function AccountManager({ mnemonic }) {
   }
 
   const importAccount = () => {
-    console.log("private key", privateKey);
+    console.log("private key", privateKey, selectedChain);
     if (privateKey) {
       privateKey;
+      generateAccountsForImport(privateKey, selectedChain);
       setShowImportModal(false);
     }
   };
@@ -666,7 +734,32 @@ function AccountManager({ mnemonic }) {
                       console.log(e.target, "value");
                       console.log("Switching to " + capitalize(e.target.value));
                       setSelectedChain(e.target.value);
-                      console.log("Changed to: ", selectedChain);
+                      console.log("Changed to: ", e.target.value);
+                      if (String(e.target.value).localeCompare("bitcoinTestNet") === 0) {
+                        let reqAcc = accounts.filter(x => x.network === "bitcoinTest")
+                        console.log(reqAcc);
+                        setSelectedAccount(reqAcc[0])
+                      } else if (String(e.target.value).localeCompare("bitcoin") === 0) {
+                        let reqAcc = accounts.filter(x => x.network === "bitcoinMain")
+                        console.log(reqAcc);
+                        setSelectedAccount(reqAcc[0])
+                      } else if (String(e.target.value).localeCompare("mainnet") === 0) {
+                        let reqAcc = accounts.filter(x => x.network === "evmChain")
+                        console.log(reqAcc);
+                        setSelectedAccount(reqAcc[0])
+                      } else if (String(e.target.value).localeCompare("goerli") === 0) {
+                        let reqAcc = accounts.filter(x => x.network === "evmChain")
+                        console.log(reqAcc);
+                        setSelectedAccount(reqAcc[0])
+                      } else if (String(e.target.value).localeCompare("bscMainNet") === 0) {
+                        let reqAcc = accounts.filter(x => x.network === "evmChain")
+                        console.log(reqAcc);
+                        setSelectedAccount(reqAcc[0])
+                      } else if (String(e.target.value).localeCompare("bscTestNet") === 0) {
+                        let reqAcc = accounts.filter(x => x.network === "evmChain")
+                        console.log(reqAcc);
+                        setSelectedAccount(reqAcc[0])
+                      }
                     }}
                     defaultValue={capitalize(selectedChain)}
                   >
@@ -754,6 +847,32 @@ function AccountManager({ mnemonic }) {
                     />
                   }
                   onClick={() => {
+                    console.log(accounts);
+                    if (String(selectedChain).localeCompare("bitcoinTestNet") === 0) {
+                      let reqAcc = accounts.filter(x => x.network === "bitcoinTest")
+                      console.log(reqAcc);
+                      setSelectedAccount(reqAcc[0])
+                    } else if (String(selectedChain).localeCompare("bitcoin") === 0) {
+                      let reqAcc = accounts.filter(x => x.network === "bitcoinMain")
+                      console.log(reqAcc);
+                      setSelectedAccount(reqAcc[0])
+                    } else if (String(selectedChain).localeCompare("mainnet") === 0) {
+                      let reqAcc = accounts.filter(x => x.network === "evmChain")
+                      console.log(reqAcc);
+                      setSelectedAccount(reqAcc[0])
+                    } else if (String(selectedChain).localeCompare("goerli") === 0) {
+                      let reqAcc = accounts.filter(x => x.network === "evmChain")
+                      console.log(reqAcc);
+                      setSelectedAccount(reqAcc[0])
+                    } else if (String(selectedChain).localeCompare("bscMainNet") === 0) {
+                      let reqAcc = accounts.filter(x => x.network === "evmChain")
+                      console.log(reqAcc);
+                      setSelectedAccount(reqAcc[0])
+                    } else if (String(selectedChain).localeCompare("bscTestNet") === 0) {
+                      let reqAcc = accounts.filter(x => x.network === "evmChain")
+                      console.log(reqAcc);
+                      setSelectedAccount(reqAcc[0])
+                    }
                     setReceiveIntent(true);
                   }}
                 />
@@ -845,7 +964,19 @@ function AccountManager({ mnemonic }) {
                     />
                   }
                   onClick={() => {
-                    setShowAssets(true);
+                    if (String(selectedChain).localeCompare("bitcoinTestNet") === 0) {
+                      underBitcoinDevelopmentToast()
+                    } else if (String(selectedChain).localeCompare("bitcoin") === 0) {
+                      underBitcoinDevelopmentToast();
+                    } else if (String(selectedChain).localeCompare("mainnet") === 0) {
+                      setShowAssets(true);
+                    } else if (String(selectedChain).localeCompare("goerli") === 0) {
+                      setShowAssets(true);
+                    } else if (String(selectedChain).localeCompare("bscMainNet") === 0) {
+                      setShowAssets(true);
+                    } else if (String(selectedChain).localeCompare("bscTestNet") === 0) {
+                      setShowAssets(true);
+                    }
                   }}
                 />
                 <Text>Assets</Text>
@@ -965,7 +1096,6 @@ function AccountManager({ mnemonic }) {
             paddingTop={"5vh"}
             overflowY={"scroll"}
             spacing={10}
-            paddingBottom={"20px"}
           >
             <Img width={"300px"} src={"./indexx-wallet-new1.png"} />
             <br></br>
@@ -979,7 +1109,7 @@ function AccountManager({ mnemonic }) {
               );
             })}
             <Button
-              style={{ width: "270px" }}
+              style={{ width: "384px" }}
               color="white"
               variant="solid"
               bg="black"
@@ -1070,7 +1200,7 @@ function AccountManager({ mnemonic }) {
             <Input
               type={"text"}
               style={{ color: "black" }}
-              maxWidth="750px"
+              maxWidth="548px"
               maxHeight="48px"
               placeholder={"Destination Address"}
               onChange={(e) => {
@@ -1080,7 +1210,7 @@ function AccountManager({ mnemonic }) {
             <Input
               type={"text"}
               style={{ color: "black" }}
-              maxWidth="750px"
+              maxWidth="548px"
               maxHeight="48px"
               placeholder={"Amount to transfer"}
               onChange={(e) => {
@@ -1184,24 +1314,28 @@ function AccountManager({ mnemonic }) {
             <br></br>
             <h1 style={{ fontSize: "24px" }}> Import Account</h1>
 
-            <div style={{ paddingLeft: "21px" }}>
+            <div style={{
+              width: "548px",
+              display: "flex",
+              justifyContent: "center",
+              flexWrap: "wrap",
+              alignContent: "center"
+            }}>
               <p style={{ color: "black" }}>
                 {" "}
                 Imported accounts will not be associated with your originally
-                created indexx.ai account Secret Recovery Phrase.
+                created with indexx.ai account.
               </p>
-              <br></br>
-
-              <Input
-                type={"password"}
-                style={{ color: "black" }}
-                width={"100%"}
-                placeholder={"Enter Private key"}
-                onChange={(e) => {
-                  setPrivateKey(e.target.value);
-                }}
-              />
             </div>
+            <Input
+              type={"password"}
+              style={{ color: "black" }}
+              width={"548px"}
+              placeholder={"Enter Private key"}
+              onChange={(e) => {
+                setPrivateKey(e.target.value);
+              }}
+            />
 
             <HStack>
               <Button
@@ -1259,7 +1393,7 @@ function AccountManager({ mnemonic }) {
 
               <TabPanels>
                 <TabPanel>
-                  <VStack pt={"5vh"} spacing={10}>
+                  <VStack spacing={10}>
                     {tokens[selectedChain].length > 0 &&
                       tokens[selectedChain].map((item) => {
                         return (
@@ -1302,7 +1436,7 @@ function AccountManager({ mnemonic }) {
               </TabPanels>
             </Tabs>
             <Button
-              style={{ width: "270px" }}
+              style={{ width: "512px" }}
               color="white"
               variant="solid"
               bg="black"
@@ -1355,7 +1489,7 @@ function AccountManager({ mnemonic }) {
               )}
             </VStack>
             <Button
-              style={{ width: "200px" }}
+              style={{ width: "512px" }}
               color="white"
               variant="solid"
               bg="black"
@@ -1414,7 +1548,7 @@ function AccountManager({ mnemonic }) {
               )}
             </VStack>
             <Button
-              style={{ width: "200px" }}
+              style={{ width: "578px" }}
               color="white"
               variant="solid"
               bg="black"
@@ -1510,7 +1644,7 @@ function AccountManager({ mnemonic }) {
                       setLoadingMessage("Switching Account");
                       let balance = await checkBalance(account.address);
                       setLoadingMessage("Getting account details");
-
+                      console.log("balance", account)
                       setSelectedAccount({ ...account, balance });
                       setTimeout(() => {
                         setLoadingMessage(null);
