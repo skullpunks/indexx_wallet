@@ -91,11 +91,19 @@ function AccountManager({ mnemonic }) {
   const [showTxs, setShowTxs] = useState(false);
   const [notifications, setNotifications] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [countOfUnreadNotifications, setCountOfUnreadNotifications] = useState(0);
   const [showFaceRecogition, setShowFaceRecogition] = useState(false);
+  const [countOfUnreadNotifications, setCountOfUnreadNotifications] = useState({
+    mainnet: 0,
+    goerli: 0,
+    bitcoin:0,
+    bitcoinTestNet: 0,
+    bscMainNet: 0,
+    bscTestNet: 0,
+  });
+
   const [isSleeping, setIsSleeping] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
-
+  console.log("Notificaiton: ",selectedChain, countOfUnreadNotifications[selectedChain] );
   const web3 = useRef(null);
   const toast = useToast();
   function Toast(message) {
@@ -267,8 +275,8 @@ function AccountManager({ mnemonic }) {
     if (!selectedAccount || !selectedChain) {
       return 0;
     }
-    if (!isSwitchLoading)
-      loadingMessage == null && setLoadingMessage("Loading");
+    // if (!isSwitchLoading)
+    //   loadingMessage == null && setLoadingMessage("Loading");
     web3.current = await getWeb3(selectedChain);
     // fetching latest transactions of selected account
     let trxs = await getTransactions(
@@ -276,6 +284,7 @@ function AccountManager({ mnemonic }) {
       selectedAccount.address,
       setTransactions,
       setNotifications,
+      countOfUnreadNotifications,
       setCountOfUnreadNotifications
     );
     // fetching balance of the user
@@ -328,6 +337,7 @@ function AccountManager({ mnemonic }) {
   // use Effects
   /**/
   useEffect(() => {
+    setIsSwitchLoading(true);
     updateAssets();
     // if(loadingMessage == null)
     // setImage()
@@ -377,6 +387,7 @@ function AccountManager({ mnemonic }) {
       selectedAccount.address,
       setTransactions,
       setNotifications,
+      countOfUnreadNotifications,
       setCountOfUnreadNotifications
     );
   }, [selectedAccount]);
@@ -720,10 +731,13 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image
-                    width={"81px"}
-                    height={"78px"}
-                    src={"./buysell1.png"} />}
+                  icon={
+                    <Image
+                      width={"81px"}
+                      height={"78px"}
+                      src={"./buysell1.png"}
+                    />
+                  }
                   onClick={() => setBuyIntent(true)}
                 //onClick={() => <BuyMethods buyMethods={buyMethods}/>}
                 />
@@ -732,10 +746,13 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image
-                    width={"81px"}
-                    height={"78px"}
-                    src={"./receive1.png"} />}
+                  icon={
+                    <Image
+                      width={"81px"}
+                      height={"78px"}
+                      src={"./receive1.png"}
+                    />
+                  }
                   onClick={() => {
                     setReceiveIntent(true);
                   }}
@@ -746,10 +763,9 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image
-                    width={"81px"}
-                    height={"78px"}
-                    src={"./send1.png"} />}
+                  icon={
+                    <Image width={"81px"} height={"78px"} src={"./send1.png"} />
+                  }
                   onClick={() => {
                     setSendIntent(true);
                   }}
@@ -791,11 +807,19 @@ function AccountManager({ mnemonic }) {
                   isDisabled={isSleeping}
                   icon={
                     <>
-                      {" "}
-                      <Image
-                        width={"81px"}
-                        height={"78px"}
-                        src={"./notif1.png"} />
+                      {countOfUnreadNotifications[selectedChain] > 0 ? (
+                        <Image
+                          width={"88px"}
+                          height={"89px"}
+                          src={"./notification_unread.png"}
+                        />
+                      ) : (
+                        <Image
+                          width={"81px"}
+                          height={"78px"}
+                          src={"./notif1.png"}
+                        />
+                      )}
                       {/* <Box as={'span'} color={'white'} position={'absolute'} top={'-45px'} left={'-7px'} fontSize={'1.4rem'}
                       bgColor={'#F66137'} borderRadius={'llg'} zIndex={9999} p={'1px'}>
                       {1}
@@ -813,10 +837,13 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image
-                    width={"81px"}
-                    height={"78px"}
-                    src={"./assets1.png"} />}
+                  icon={
+                    <Image
+                      width={"81px"}
+                      height={"78px"}
+                      src={"./assets1.png"}
+                    />
+                  }
                   onClick={() => {
                     setShowAssets(true);
                   }}
@@ -827,10 +854,13 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image
-                    width={"81px"}
-                    height={"78px"}
-                    src={"./transactions1.png"} />}
+                  icon={
+                    <Image
+                      width={"81px"}
+                      height={"78px"}
+                      src={"./transactions1.png"}
+                    />
+                  }
                   onClick={() => {
                     setShowTxs(true);
                   }}

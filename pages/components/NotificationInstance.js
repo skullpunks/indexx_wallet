@@ -86,18 +86,21 @@ function NotificationInstance({
         defaultChecked={asset.isChecked}
         onChange={(event) => {
           console.log("check: ", event.target.checked);
+          const curCountOfUnreadNotifications = countOfUnreadNotifications[selectedChain];
           if (event.target.checked)
-            setCountOfUnreadNotifications(countOfUnreadNotifications - 1);
-          else 
-          setCountOfUnreadNotifications(countOfUnreadNotifications + 1);
+            setCountOfUnreadNotifications({
+              ...countOfUnreadNotifications,
+              [selectedChain]: curCountOfUnreadNotifications - 1
+            });
+          else setCountOfUnreadNotifications({...countOfUnreadNotifications,[selectedChain]:curCountOfUnreadNotifications + 1});
+            console.log("notificaitons netw in noti",selectedChain,countOfUnreadNotifications)
+
           let checkBoxVals = localStorage.getItem("checkBoxVal");
-          console.log("Txn getting", checkBoxVals);
           checkBoxVals = JSON.parse(checkBoxVals);
-          console.log("Txn getting parsed ", checkBoxVals);
           checkBoxVals[asset.hash] = event.target.checked;
 
           localStorage.setItem("checkBoxVal", JSON.stringify(checkBoxVals));
-          console.log("Notificaiton check Prev: ", countOfUnreadNotifications);
+          console.log("Notificaiton check Prev: ", curCountOfUnreadNotifications);
           // }
         }}
       >
