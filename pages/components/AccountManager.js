@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import Web3 from "web3";
 //import { generateBitcoinMainAddressFromMnemonic } from "../api/bitcoin";
 import { buyMethods, chains, currencyOf, tokens } from "../api/data";
-import { getTransactions, getWeb3, prepareTransaction, _signTransactionAndBroadcast } from "../api/Transaction";
+import { getTransactions, getWeb3, prepareTransaction, _signTransactionAndBroadcast, roundToTwoNonZero } from "../api/Transaction";
 import {
   arrayToPrivateKey,
   capitalize,
@@ -122,10 +122,13 @@ function AccountManager({ mnemonic }) {
       if (balance == undefined) {
         return 0;
       }
-      balance = parseFloat(parseInt(balance) / 10 ** 18).toFixed(4);
-      if (balance.toString() === "0.0000") {
-        balance = 0;
-      }
+      console.log("bal ",balance);
+      // balance = parseFloat(parseInt(balance) / 10 ** 18).toFixed(4);
+      balance=roundToTwoNonZero(parseInt(balance)/1e18);
+      
+      // if (balance.toString() === "0.0000") {
+      //   balance = 0;
+      // }
       return balance;
     }
   }
