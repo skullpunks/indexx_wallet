@@ -46,7 +46,7 @@ function NotificationInstance({ asset, selectedChain, countOfUnreadNotifications
         <Text fontWeight={"700"}> {getMinimalAddress(asset.from)}</Text>
         <HStack justify={"center"} width={"15vw"} spacing={5}>
           <Img height={5} src="https://png.pngtree.com/png-vector/20190419/ourmid/pngtree-vector-down-arrow-icon-png-image_956433.jpg" alt="down arrow" />
-          <Text textDecoration={"underline"}>{asset.value}</Text>
+          <Text textDecoration={"underline"}>{asset.value ? asset.value : 0 }</Text>
         </HStack>
         <Text fontWeight={"700"}>{getMinimalAddress(asset.to)}</Text>
       </VStack>

@@ -73,9 +73,10 @@ export async function getTransactions(network, address, setter, setter2, countOf
     // console.log("Notificaitons txn from", to_trxs);
     let arr = [...to_trxs.transfers];
     arr = arr.concat(from_trxs.transfers);
+
     arr.reverse();
     arr.sort((a, b) => (a.blockNum > b.blockNum ? -1 : 1));
-    arr = arr.map((obj) => ({ ...obj, "value": roundToTwoNonZero(parseInt(obj.rawContract.value.toString(), 16) / 1e18) }));
+    arr = arr.map((obj) => ({ ...obj, "value": roundToTwoNonZero(parseInt(obj?.rawContract?.value?.toString(), 16) / 1e18) }));
     // console.log("New Arr", arr);
     if (setter) {
       setter(arr);

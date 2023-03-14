@@ -1294,14 +1294,14 @@ function AccountManager({ mnemonic }) {
             <VStack spacing={10}>
               <h1 style={{ fontSize: "24px" }}>Notifications</h1>
 
-              {notifications.length === 0 ? (
+              {notifications?.length === 0 ? (
                 <>
                   <Text>No Recent Notifications</Text>
                 </>
               ) : (
                 <>
                   <VStack spacing={5}>
-                    {notifications.map((asset) => {
+                    {notifications?.map((asset) => {
                       return (
                         <NotificationInstance
                           key={asset.hash.toString()}
