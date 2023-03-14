@@ -102,7 +102,7 @@ function AccountManager({ mnemonic }) {
 
   const [isSleeping, setIsSleeping] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
-  console.log("Notificaiton: ",selectedChain, countOfUnreadNotifications[selectedChain] );
+  console.log("Notificaiton: ",selectedChain,  countOfUnreadNotifications[selectedChain],countOfUnreadNotifications );
   const web3 = useRef(null);
   const toast = useToast();
   function Toast(message) {
