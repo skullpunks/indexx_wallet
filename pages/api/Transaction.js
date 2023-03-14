@@ -3,18 +3,11 @@ const { alchemyApps } = require("./data");
 import Web3 from "web3";
 import { providers } from "./data";
 import axios from "axios";
-export async function getTransactions(
-  network,
-  address,
-  setter,
-  setter2,
-  countOfUnreadNotifications,
-  setCountOfUnreadNotifications,
-) {
+export async function getTransactions(network, address, setter, setter2, countOfUnreadNotifications, setCountOfUnreadNotifications) {
   const config = alchemyApps[network];
   if (network === "bscTestNet" || network === "bscMainNet") {
     let arr = await bnbAllTransaction(address, network);
-    arr.forEach((a) => {
+    arr?.forEach((a) => {
       const s = /^[a-zA-Z]/.test(a.value);
       if (s) {
       } else {
@@ -23,46 +16,44 @@ export async function getTransactions(
     });
     arr.sort((a, b) => (a.blockNumber > b.blockNumber ? -1 : 1));
     setter(arr);
+    setter2(getNotification(arr, address, network, countOfUnreadNotifications, setCountOfUnreadNotifications));
+    // console.log("Txn ", arr);
+    // // notification arr (only to = address)
+    // let filteredData = arr.filter((item) => item.to === address);
+    // console.log("Txn filtered: ", filteredData);
 
-    console.log("Txn ", arr);
-    // notification arr (only to = address)
-    let filteredData = arr.filter((item) => item.to === address);
-    console.log("Txn filtered: ", filteredData);
+    // // reading whether or not message is read
+    // let checkBoxVals = localStorage.getItem("checkBoxVal");
+    // console.log("Txn getting", checkBoxVals);
 
-    // reading whether or not message is read
-    let checkBoxVals = localStorage.getItem("checkBoxVal");
-    console.log("Txn getting", checkBoxVals);
+    // checkBoxVals = JSON.parse(checkBoxVals);
+    // // adding checked key
+    // filteredData = filteredData.map((obj) => {
+    //   console.log(obj.hash);
+    //   return {
+    //     ...obj,
+    //     isChecked: checkBoxVals && checkBoxVals[obj.hash] ? checkBoxVals[obj.hash] : false,
+    //   };
+    // });
 
-    checkBoxVals = JSON.parse(checkBoxVals);
-    // adding checked key
-    filteredData = filteredData.map((obj) => {
-      console.log(obj.hash);
-      return {
-        ...obj,
-        isChecked:
-          checkBoxVals && checkBoxVals[obj.hash]
-            ? checkBoxVals[obj.hash]
-            : false,
-      };
-    });
+    // let t = {};
+    // let curCountOfUnreadNotifications = 0;
 
-    let t = {};
-    let curCountOfUnreadNotifications = 0;
+    // for (const item of filteredData) {
+    //   t[item.hash] = item.isChecked;
+    //   if (!item.isChecked) curCountOfUnreadNotifications++;
+    // }
+    // t = JSON.stringify(t);
+    // console.log("Txn setting stringfy", t);
 
-    for (const item of filteredData) {
-      t[item.hash] = item.isChecked;
-      if (!item.isChecked) curCountOfUnreadNotifications++;
-    }
-    t = JSON.stringify(t);
-    console.log("Txn setting stringfy", t);
-
-    localStorage.setItem("checkBoxVal", t);
-    setter2(filteredData);
-    // setCountOfUnreadNotifications[network]=countOfUnreadNotifications;
-    console.log("notificaitons netw in gett",network,countOfUnreadNotifications)
-    setCountOfUnreadNotifications({
-      ...countOfUnreadNotifications,[network]:curCountOfUnreadNotifications
-    })
+    // localStorage.setItem("checkBoxVal", t);
+    // setter2(filteredData);
+    // // setCountOfUnreadNotifications[network]=countOfUnreadNotifications;
+    // console.log("notificaitons netw in gett", network, countOfUnreadNotifications);
+    // setCountOfUnreadNotifications({
+    //   ...countOfUnreadNotifications,
+    //   [network]: curCountOfUnreadNotifications,
+    // });
     return arr;
   } else if (network === "bitcoin" || network === "bitcoinTestNet") {
     setter2([]);
@@ -79,19 +70,65 @@ export async function getTransactions(
       fromAddress: address,
       category: ["external", "internal", "erc20", "erc721", "erc1155"],
     });
-
+    // console.log("Notificaitons txn from", to_trxs);
     let arr = [...to_trxs.transfers];
     arr = arr.concat(from_trxs.transfers);
     arr.reverse();
     arr.sort((a, b) => (a.blockNum > b.blockNum ? -1 : 1));
+    arr = arr.map((obj) => ({ ...obj, "value": roundToTwoNonZero(parseInt(obj.rawContract.value.toString(), 16) / 1e18) }));
+    // console.log("New Arr", arr);
     if (setter) {
       setter(arr);
-      setter2(arr);
+      setter2(getNotification(arr, address, network, countOfUnreadNotifications, setCountOfUnreadNotifications));
     }
     return arr;
   }
 }
+function getNotification(arr, address, network, countOfUnreadNotifications, setCountOfUnreadNotifications) {
+  // console.log("Notificaiton Txn ", arr);
+  // console.log("Notificaiton Txn ", arr[0]["to"]);
+  // notification arr (only to = address)
+  let filteredData = arr.filter((item) => item.to === address);
+  // console.log("Txn filtered: ", filteredData);
 
+  // reading whether or not message is read
+  let checkBoxVals = localStorage.getItem("checkBoxVal");
+  // console.log("Notificaiton txn getting", checkBoxVals);
+
+  checkBoxVals = JSON.parse(checkBoxVals);
+  // console.log("Notificaiton Parsed", checkBoxVals);
+  // adding checked key
+  filteredData = filteredData.map((obj) => {
+    // console.log("Notificaiton hash in noti", obj.hash);
+    return {
+      ...obj,
+      isChecked: checkBoxVals && checkBoxVals[obj.hash] ? checkBoxVals[obj.hash] : false,
+    };
+  });
+
+  let curCountOfUnreadNotifications = 0;
+
+  for (const item of filteredData) {
+    console.log("Notificaiton", item.hash, item.isChecked);
+
+    checkBoxVals[item.hash] = item.isChecked;
+    if (!item.isChecked) curCountOfUnreadNotifications++;
+  }
+  console.log("Notificaiton check new val", checkBoxVals);
+
+  checkBoxVals = JSON.stringify(checkBoxVals);
+  console.log("Notificaiton setting stringfy", checkBoxVals);
+  console.log("Notificaiton ", curCountOfUnreadNotifications);
+  localStorage.setItem("checkBoxVal", checkBoxVals);
+  // setter2(filteredData);
+  // setCountOfUnreadNotifications[network]=countOfUnreadNotifications;
+  console.log("notificaitons netw in gett", network, countOfUnreadNotifications);
+  setCountOfUnreadNotifications({
+    ...countOfUnreadNotifications,
+    [network]: curCountOfUnreadNotifications,
+  });
+  return filteredData;
+}
 export async function getWeb3(chain_name) {
   let HttpProviderURL = providers[chain_name];
   if (!HttpProviderURL) {
@@ -104,12 +141,7 @@ export async function getWeb3(chain_name) {
   return _web3;
 }
 
-export async function prepareTransaction(
-  value,
-  toAddress,
-  selectedChain,
-  setter
-) {
+export async function prepareTransaction(value, toAddress, selectedChain, setter) {
   let web3 = await getWeb3(selectedChain);
   const gasPrice = await web3.eth.getGasPrice();
   const gasLimit = 21000;
@@ -123,14 +155,7 @@ export async function prepareTransaction(
   setter(rawTransaction);
   return rawTransaction;
 }
-export async function _signTransactionAndBroadcast(
-  transactionObject,
-  privKey,
-  selectedChain,
-  setter,
-  finisher,
-  Toaster
-) {
+export async function _signTransactionAndBroadcast(transactionObject, privKey, selectedChain, setter, finisher, Toaster) {
   let web3 = await getWeb3(selectedChain);
   console.log({
     transactionObject,
@@ -140,22 +165,14 @@ export async function _signTransactionAndBroadcast(
     finisher,
     Toaster,
   });
-  const signedTransaction = await web3.eth.accounts.signTransaction(
-    transactionObject,
-    privKey
-  );
+  const signedTransaction = await web3.eth.accounts.signTransaction(transactionObject, privKey);
   setter(signedTransaction);
   broadcastTransaction(signedTransaction, finisher, Toaster, selectedChain);
   return signedTransaction;
 }
 
 // Function to broadcast the signed transaction
-export async function broadcastTransaction(
-  signedTransaction,
-  finisher,
-  Toast,
-  selectedChain
-) {
+export async function broadcastTransaction(signedTransaction, finisher, Toast, selectedChain) {
   let web3 = await getWeb3(selectedChain);
   if (!web3) return null;
 
@@ -190,15 +207,11 @@ export async function broadcastTransaction(
           type: "success",
         });
 
-        Toast(
-          `Funds transferred successfully, block number: ${receipt.blockNumber}`
-        );
+        Toast(`Funds transferred successfully, block number: ${receipt.blockNumber}`);
 
         finisher();
 
-        console.log(
-          `Funds transferred successfully, block number: ${receipt.blockNumber}`
-        );
+        console.log(`Funds transferred successfully, block number: ${receipt.blockNumber}`);
       } else {
         return;
       }
@@ -220,9 +233,7 @@ export async function bnbExternalTransaction(address, network) {
       );
       return response.data.result;
     } else {
-      const response = await axios.get(
-        `https://api.bscscan.com/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=X67YKQTIRVI5B7IR8XPW16BGTCTYXDWTSK`
-      );
+      const response = await axios.get(`https://api.bscscan.com/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=X67YKQTIRVI5B7IR8XPW16BGTCTYXDWTSK`);
       return response.data.result;
     }
   } catch (err) {
@@ -248,11 +259,7 @@ export async function bnberc20Transaction(address, network) {
   }
 }
 
-export async function bnberc20TransactionByContractAddress(
-  address,
-  contractAddress,
-  network
-) {
+export async function bnberc20TransactionByContractAddress(address, contractAddress, network) {
   try {
     if (network === "bscTestNet") {
       const response = await axios.get(
@@ -304,6 +311,25 @@ export async function bnbInternalTransaction(address, network) {
   } catch (err) {
     console.log(err);
   }
+}
+
+export function roundToTwoNonZero(num) {
+  console.log("asset: first", num);
+
+  let numString = num.toString();
+  if (numString.includes("-")) {
+    console.log("sci");
+    numString = num.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 20 });
+    console.log("asset: unsci", numString);
+    // return;
+  }
+  const decimalIndex = numString.indexOf(".") + 1;
+  const firstNonZeroIndex = decimalIndex + numString.substring(decimalIndex).search(/[^0]/);
+  console.log("asset: first", firstNonZeroIndex);
+
+  const roundedString = parseFloat(numString.slice(0, firstNonZeroIndex + 3)).toFixed(firstNonZeroIndex - decimalIndex + 3);
+  console.log("asset: rounded", roundedString);
+  return parseFloat(roundedString);
 }
 
 export async function bnbAllTransaction(address, network) {

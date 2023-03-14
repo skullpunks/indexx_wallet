@@ -1,25 +1,5 @@
 /**       Imports */
-import {
-  Box,
-  Button,
-  Heading,
-  HStack,
-  IconButton,
-  Image,
-  Img,
-  Input,
-  Spinner,
-  Switch,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Text,
-  useClipboard,
-  useToast,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Heading, HStack, IconButton, Image, Img, Input, Spinner, Switch, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useClipboard, useToast, VStack } from "@chakra-ui/react";
 import * as bip39 from "@scure/bip39";
 import axios from "axios";
 import { hdkey } from "ethereumjs-wallet";
@@ -29,12 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import Web3 from "web3";
 //import { generateBitcoinMainAddressFromMnemonic } from "../api/bitcoin";
 import { buyMethods, chains, currencyOf, tokens } from "../api/data";
-import {
-  getTransactions,
-  getWeb3,
-  prepareTransaction,
-  _signTransactionAndBroadcast,
-} from "../api/Transaction";
+import { getTransactions, getWeb3, prepareTransaction, _signTransactionAndBroadcast } from "../api/Transaction";
 import {
   arrayToPrivateKey,
   capitalize,
@@ -85,9 +60,7 @@ function AccountManager({ mnemonic }) {
   const [privateKey, setPrivateKey] = useState("");
   const [showImportModal, setShowImportModal] = useState(false);
   const [image, setImage] = useState("");
-  const { onCopy, value, setValue, hasCopied } = useClipboard(
-    selectedAccount?.address
-  );
+  const { onCopy, value, setValue, hasCopied } = useClipboard(selectedAccount?.address);
   const [showAssets, setShowAssets] = useState(false);
   const [explorerURL, setExplorerURL] = useState("");
   const [showTxs, setShowTxs] = useState(false);
@@ -102,10 +75,9 @@ function AccountManager({ mnemonic }) {
     bscMainNet: 0,
     bscTestNet: 0,
   });
-
   const [isSleeping, setIsSleeping] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
-  console.log("Notificaiton: ", selectedChain, countOfUnreadNotifications[selectedChain]);
+  console.log("Notificaiton: ", selectedChain, countOfUnreadNotifications[selectedChain], countOfUnreadNotifications);
   const web3 = useRef(null);
   const toast = useToast();
   function Toast(message) {
@@ -137,14 +109,19 @@ function AccountManager({ mnemonic }) {
   async function checkBalance(address) {
     if (selectedChain.includes("bitcoin")) {
       console.log("bitcoin");
+
       return 0;
     } else {
-      if (!address) return 0;
+      if (!address) {
+        return 0;
+      }
       if (!web3 || !web3.current) {
         web3.current = await getWeb3(selectedChain);
       }
       let balance = await web3.current?.eth.getBalance(address);
-      if (balance == undefined) return 0;
+      if (balance == undefined) {
+        return 0;
+      }
       balance = parseFloat(parseInt(balance) / 10 ** 18).toFixed(4);
       if (balance.toString() === "0.0000") {
         balance = 0;
@@ -154,31 +131,22 @@ function AccountManager({ mnemonic }) {
   }
 
   async function bitcoinTestBalance(address) {
-    let balance = await axios.get(
-      "https://api.blockcypher.com/v1/btc/test3/addrs/" + address + "/balance"
-    );
+    let balance = await axios.get("https://api.blockcypher.com/v1/btc/test3/addrs/" + address + "/balance");
     console.log(balance.data);
     return balance.data.balance / Math.pow(10, 8);
   }
 
   async function bitcoinMainBalance(address) {
-    let balance = await axios.get(
-      "https://api.blockcypher.com/v1/btc/main/addrs/" + address + "/balance"
-    );
+    let balance = await axios.get("https://api.blockcypher.com/v1/btc/main/addrs/" + address + "/balance");
     console.log(balance.data);
     return balance.data.balance / Math.pow(10, 8);
   }
 
   const generateAccounts = async (_seedPhrase) => {
     try {
-      if (
-        String(_seedPhrase).startsWith("0x") ||
-        String(_seedPhrase).length === 64
-      ) {
+      if (String(_seedPhrase).startsWith("0x") || String(_seedPhrase).length === 64) {
         let _accounts = accounts;
-        let addressObj = new Web3().eth.accounts.privateKeyToAccount(
-          "0x" + _seedPhrase
-        );
+        let addressObj = new Web3().eth.accounts.privateKeyToAccount("0x" + _seedPhrase);
         let _address = addressObj.address;
         let balance = await checkBalance(_address);
         let _accountsObject = {
@@ -342,34 +310,24 @@ function AccountManager({ mnemonic }) {
     if (!selectedAccount || !selectedChain) {
       return 0;
     }
+    setIsSwitchLoading(true);
+
     // if (!isSwitchLoading)
     //   loadingMessage == null && setLoadingMessage("Loading");
     web3.current = await getWeb3(selectedChain);
     // fetching latest transactions of selected account
-    let trxs = await getTransactions(
-      selectedChain,
-      selectedAccount.address,
-      setTransactions,
-      setNotifications,
-      countOfUnreadNotifications,
-      setCountOfUnreadNotifications
-    );
+    let trxs = await getTransactions(selectedChain, selectedAccount.address, setTransactions, setNotifications, countOfUnreadNotifications, setCountOfUnreadNotifications);
     // fetching balance of the user
     let balance = await checkBalance(selectedAccount.address);
     setSelectedAccount({ ...selectedAccount, balance });
-
+    setIsSwitchLoading(false);
     setTimeout(() => {
       setLoadingMessage(null);
     }, 1000);
   }
 
   async function transferMoney() {
-    await prepareTransaction(
-      parseEther(transferAmount.toString()),
-      transferAddress,
-      selectedChain,
-      setTransactionObject
-    );
+    await prepareTransaction(parseEther(transferAmount.toString()), transferAddress, selectedChain, setTransactionObject);
   }
 
   async function signTransaction() {
@@ -405,7 +363,7 @@ function AccountManager({ mnemonic }) {
   // use Effects
   /**/
   useEffect(() => {
-    setIsSwitchLoading(true);
+    // setIsSwitchLoading(true);
     updateAssets();
     // if(loadingMessage == null)
     // setImage()
@@ -415,10 +373,7 @@ function AccountManager({ mnemonic }) {
       setImage("./BTC.png");
     } else if (selectedChain === "mainnet" || selectedChain === "goerli") {
       setImage("./ETH.png");
-    } else if (
-      selectedChain === "bscMainNet" ||
-      selectedChain === "bscTestNet"
-    ) {
+    } else if (selectedChain === "bscMainNet" || selectedChain === "bscTestNet") {
       setImage("./BNB.png");
     }
 
@@ -435,7 +390,7 @@ function AccountManager({ mnemonic }) {
     } else if (String(selectedChain).localeCompare("bscTestNet") === 0) {
       setExplorerURL("https://testnet.bscscan.com/address/");
     }
-    setIsSwitchLoading(false);
+    // setIsSwitchLoading(false);
   }, [selectedChain]);
 
   useEffect(() => {
@@ -450,14 +405,7 @@ function AccountManager({ mnemonic }) {
 
   useEffect(() => {
     if (!selectedAccount || !selectedAccount.address) return;
-    getTransactions(
-      selectedChain,
-      selectedAccount.address,
-      setTransactions,
-      setNotifications,
-      countOfUnreadNotifications,
-      setCountOfUnreadNotifications
-    );
+    getTransactions(selectedChain, selectedAccount.address, setTransactions, setNotifications, countOfUnreadNotifications, setCountOfUnreadNotifications);
   }, [selectedAccount]);
 
   return (
@@ -468,13 +416,7 @@ function AccountManager({ mnemonic }) {
       <>
         <HStack width={"40vw"} justify={"space-between"} top={"25vp"}>
           {/* Wallet logo */}
-          <VStack
-            spacing={5}
-            width={"100%"}
-            height={"80%"}
-            top={"25vp"}
-            justify={"center"}
-          >
+          <VStack spacing={5} width={"100%"} height={"80%"} top={"25vp"} justify={"center"}>
             <Img
               // height={"100px"}
               width={"300px"}
@@ -588,15 +530,7 @@ function AccountManager({ mnemonic }) {
             {showAccountDetails && (
               <>
                 <ModalWrapper>
-                  <VStack
-                    height={"75vh"}
-                    position={"absolute"}
-                    zIndex={2}
-                    bg={"white"}
-                    width={"40vw"}
-                    borderRadius={"20px"}
-                    paddingTop={"5vh"}
-                  >
+                  <VStack height={"75vh"} position={"absolute"} zIndex={2} bg={"white"} width={"40vw"} borderRadius={"20px"} paddingTop={"5vh"}>
                     <Text>
                       <b>Address:</b> {selectedAccount?.address}
                       <b>Private Key:</b> {selectedAccount?.privateKey}
@@ -605,24 +539,13 @@ function AccountManager({ mnemonic }) {
                     <br></br>
                     <br></br>
 
-                    <Button
-                      style={{ width: "270px" }}
-                      colorScheme={"red"}
-                      onClick={() => window.open("https://google.com")}
-                    >
+                    <Button style={{ width: "270px" }} colorScheme={"red"} onClick={() => window.open("https://google.com")}>
                       Import Account
                     </Button>
 
                     <br></br>
                     <br></br>
-                    <Button
-                      style={{ width: "270px" }}
-                      color="white"
-                      variant="solid"
-                      bg="black"
-                      _hover={{ bg: "black" }}
-                      onClick={() => setShowAccountDetails(false)}
-                    >
+                    <Button style={{ width: "270px" }} color="white" variant="solid" bg="black" _hover={{ bg: "black" }} onClick={() => setShowAccountDetails(false)}>
                       Complete
                     </Button>
                   </VStack>
@@ -635,13 +558,7 @@ function AccountManager({ mnemonic }) {
 
       {loadingMessage != null ? (
         <VStack align={"center"} width={"50vw"} height={"80vw"} spacing={10}>
-          <Spinner
-            thickness="5px"
-            speed="0.5s"
-            emptyColor="gray.200"
-            color="green.500"
-            size="xl"
-          />
+          <Spinner thickness="5px" speed="0.5s" emptyColor="gray.200" color="green.500" size="xl" />
           <Heading>{loadingMessage}</Heading>
         </VStack>
       ) : (
@@ -667,7 +584,6 @@ function AccountManager({ mnemonic }) {
                 {isConnected ? "Connected" : "Connect Now"}
               </Text>
             </HStack> */}
-
 
             <div>
               <Box
@@ -783,17 +699,8 @@ function AccountManager({ mnemonic }) {
               </Box>
             </div>
 
-            <Button
-              _hover={{ bg: "transparent" }}
-              bg={"transparent"}
-              onClick={() => setShowAccounts(true)}
-            >
-              <Img
-                bg={"white"}
-                height={"34px"}
-                width={"27.3px"}
-                src={"./man-icon.png"}
-              />
+            <Button _hover={{ bg: "transparent" }} bg={"transparent"} onClick={() => setShowAccounts(true)}>
+              <Img bg={"white"} height={"34px"} width={"27.3px"} src={"./man-icon.png"} />
             </Button>
           </HStack>
 
@@ -802,17 +709,26 @@ function AccountManager({ mnemonic }) {
               <Spinner />
             ) : (
               <div>
-                <h2 style={{
-                  fontSize: "24px",
-                  fontWeight: "500",
-                  marginTop: "-5px",
-                  float: "left",
-                  marginRight: "10px",
-                  // paddingLeft: "20px",
-                  // paddingTop: "20%"
-                }}> {selectedAccount?.balance} {currencyOf[selectedChain]}</h2>
+                <h2
+                  style={{
+                    fontSize: "24px",
+                    fontWeight: "500",
+                    marginTop: "-5px",
+                    float: "left",
+                    marginRight: "10px",
+                    // paddingLeft: "20px",
+                    // paddingTop: "20%"
+                  }}
+                >
+                  {/* {isBalanceLoading ? (
+                    <Spinner />
+                  ) : (
+                    <> */}
+                      {selectedAccount?.balance} {currencyOf[selectedChain]}
+                    {/* </>
+                  )} */}
+                </h2>
                 <Img height={"30px"} width={"30px"} float={"left"} src={image} />
-
               </div>
             )}
             <br></br>
@@ -824,28 +740,16 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={
-                    <Image
-                      width={"81px"}
-                      height={"78px"}
-                      src={"./buysell1.png"}
-                    />
-                  }
+                  icon={<Image width={"81px"} height={"78px"} src={"./buysell1.png"} />}
                   onClick={() => setBuyIntent(true)}
-                //onClick={() => <BuyMethods buyMethods={buyMethods}/>}
+                  //onClick={() => <BuyMethods buyMethods={buyMethods}/>}
                 />
                 <Text>Buy/Sell</Text>
               </VStack>
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={
-                    <Image
-                      width={"81px"}
-                      height={"78px"}
-                      src={"./receive1.png"}
-                    />
-                  }
+                  icon={<Image width={"81px"} height={"78px"} src={"./receive1.png"} />}
                   onClick={() => {
                     console.log(accounts);
                     if (String(selectedChain).localeCompare("bitcoinTestNet") === 0) {
@@ -882,9 +786,7 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={
-                    <Image width={"81px"} height={"78px"} src={"./send1.png"} />
-                  }
+                  icon={<Image width={"81px"} height={"78px"} src={"./send1.png"} />}
                   onClick={() => {
                     setSendIntent(true);
                   }}
@@ -893,14 +795,7 @@ function AccountManager({ mnemonic }) {
               </VStack>
 
               <VStack spacing={5}>
-                <IconButton
-                  isDisabled={isSleeping}
-                  icon={<Image
-                    width={"81px"}
-                    height={"78px"}
-                    src={"./swap1.png"} />}
-                  onClick={() => window.open("https://dex.indexx.ai")}
-                />
+                <IconButton isDisabled={isSleeping} icon={<Image width={"81px"} height={"78px"} src={"./swap1.png"} />} onClick={() => window.open("https://dex.indexx.ai")} />
                 <Text>Swap</Text>
               </VStack>
             </HStack>
@@ -910,10 +805,7 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={<Image
-                    width={"81px"}
-                    height={"78px"}
-                    src={"./add1.png"} />}
+                  icon={<Image width={"81px"} height={"78px"} src={"./add1.png"} />}
                   onClick={() => {
                     setShowImportModal(true);
                   }}
@@ -927,17 +819,9 @@ function AccountManager({ mnemonic }) {
                   icon={
                     <>
                       {countOfUnreadNotifications[selectedChain] > 0 ? (
-                        <Image
-                          width={"88px"}
-                          height={"89px"}
-                          src={"./notification_unread.png"}
-                        />
+                        <Image width={"88px"} height={"89px"} src={"./notification_unread.png"} />
                       ) : (
-                        <Image
-                          width={"81px"}
-                          height={"78px"}
-                          src={"./notif1.png"}
-                        />
+                        <Image width={"81px"} height={"78px"} src={"./notif1.png"} />
                       )}
                       {/* <Box as={'span'} color={'white'} position={'absolute'} top={'-45px'} left={'-7px'} fontSize={'1.4rem'}
                       bgColor={'#F66137'} borderRadius={'llg'} zIndex={9999} p={'1px'}>
@@ -956,13 +840,7 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={
-                    <Image
-                      width={"81px"}
-                      height={"78px"}
-                      src={"./assets1.png"}
-                    />
-                  }
+                  icon={<Image width={"81px"} height={"78px"} src={"./assets1.png"} />}
                   onClick={() => {
                     if (String(selectedChain).localeCompare("bitcoinTestNet") === 0) {
                       underBitcoinDevelopmentToast()
@@ -985,13 +863,7 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={
-                    <Image
-                      width={"81px"}
-                      height={"78px"}
-                      src={"./transactions1.png"}
-                    />
-                  }
+                  icon={<Image width={"81px"} height={"78px"} src={"./transactions1.png"} />}
                   onClick={() => {
                     setShowTxs(true);
                   }}
@@ -1003,31 +875,17 @@ function AccountManager({ mnemonic }) {
             <br></br>
             <HStack spacing={145}>
               <VStack spacing={5}>
-                <IconButton
-                  isDisabled={isSleeping}
-                  icon={
-                    <Image
-                      width={"81px"}
-                      height={"78px"}
-                      src={"./fingerprint1.png"}
-                    />
-                  }
-                  onClick={underDevelopmentToast}
-                />
+                <IconButton isDisabled={isSleeping} icon={<Image width={"81px"} height={"78px"} src={"./fingerprint1.png"} />} onClick={underDevelopmentToast} />
                 <Text>Fingerprint</Text>
               </VStack>
 
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={
-                    <Image
-                      width={"81px"}
-                      height={"78px"}
-                      src={"./facerecog1.png"}
-                    />
-                  }
-                  onClick={() => { setShowFaceRecogition(true) }}
+                  icon={<Image width={"81px"} height={"78px"} src={"./facerecog1.png"} />}
+                  onClick={() => {
+                    setShowFaceRecogition(true);
+                  }}
                 />
                 <Text>Face Recogition</Text>
               </VStack>
@@ -1035,9 +893,7 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 <IconButton
                   isDisabled={isSleeping}
-                  icon={
-                    <Image width={"81px"} height={"78px"} src={"./scan1.png"} />
-                  }
+                  icon={<Image width={"81px"} height={"78px"} src={"./scan1.png"} />}
                   onClick={() => {
                     console.log(isSleeping);
                     window.open(explorerURL + selectedAccount?.address);
@@ -1049,13 +905,7 @@ function AccountManager({ mnemonic }) {
               <VStack spacing={5}>
                 {isSleeping ? (
                   <IconButton
-                    icon={
-                      <Image
-                        width={"81px"}
-                        height={"78px"}
-                        src={"./sleeping1.png"}
-                      />
-                    }
+                    icon={<Image width={"81px"} height={"78px"} src={"./sleeping1.png"} />}
                     onClick={() => {
                       setIsSleeping(!isSleeping);
                       location.reload();
@@ -1064,13 +914,7 @@ function AccountManager({ mnemonic }) {
                   />
                 ) : (
                   <IconButton
-                    icon={
-                      <Image
-                        width={"81px"}
-                        height={"78px"}
-                        src={"./non-sleeping1.png"}
-                      />
-                    }
+                    icon={<Image width={"81px"} height={"78px"} src={"./non-sleeping1.png"} />}
                     onClick={() => {
                       setIsSleeping(!isSleeping);
                       console.log(isSleeping);
@@ -1101,12 +945,7 @@ function AccountManager({ mnemonic }) {
             <br></br>
             <br></br>
             {buyMethods.map((item) => {
-              return (
-                <PaymentMethodInstance
-                  payment={item}
-                  key={"payment" + item.title}
-                />
-              );
+              return <PaymentMethodInstance payment={item} key={"payment" + item.title} />;
             })}
             <Button
               style={{ width: "384px" }}
@@ -1145,23 +984,19 @@ function AccountManager({ mnemonic }) {
               value={selectedAccount?.address}
               size={100}
               level={"H"}
-            // style={{ marginLeft: 92 }}
-            // imageSettings={
-            //   {
-            //     src: image,
-            //     height: 20,
-            //     width: 20,
-            //     // excavate: true
-            //   }
-            // }
+              // style={{ marginLeft: 92 }}
+              // imageSettings={
+              //   {
+              //     src: image,
+              //     height: 20,
+              //     width: 20,
+              //     // excavate: true
+              //   }
+              // }
             />
             <Text>{selectedAccount?.address} </Text>
             <HStack spacing={10}>
-              <Button
-                style={{ width: "200px" }}
-                colorScheme="brand"
-                onClick={onCopy}
-              >
+              <Button style={{ width: "200px" }} colorScheme="brand" onClick={onCopy}>
                 {hasCopied ? "Copied!" : "Copy"}
               </Button>
               <Button
@@ -1183,15 +1018,7 @@ function AccountManager({ mnemonic }) {
 
       {sendIntent && transactionObject == null && (
         <ModalWrapper>
-          <VStack
-            height={"max-content"}
-            position={"relative"}
-            zIndex={2}
-            bg={"white"}
-            width={"100vw"}
-            spacing={10}
-            paddingBottom={"20px"}
-          >
+          <VStack height={"max-content"} position={"relative"} zIndex={2} bg={"white"} width={"100vw"} spacing={10} paddingBottom={"20px"}>
             <Img width={"300px"} src={"./indexx-wallet-new1.png"} />
             <br></br>
             <br></br>
@@ -1218,11 +1045,7 @@ function AccountManager({ mnemonic }) {
               }}
             />
             <HStack>
-              <Button
-                style={{ width: "270px" }}
-                colorScheme="brand"
-                onClick={transferMoney}
-              >
+              <Button style={{ width: "270px" }} colorScheme="brand" onClick={transferMoney}>
                 Send
               </Button>
               <Button
@@ -1245,15 +1068,7 @@ function AccountManager({ mnemonic }) {
 
       {transactionObject && (
         <ModalWrapper>
-          <VStack
-            height={"max-content"}
-            position={"relative"}
-            zIndex={2}
-            bg={"white"}
-            width={"100vw"}
-            spacing={10}
-            paddingBottom={"20px"}
-          >
+          <VStack height={"max-content"} position={"relative"} zIndex={2} bg={"white"} width={"100vw"} spacing={10} paddingBottom={"20px"}>
             <Img width={"300px"} src={"./indexx-wallet-new1.png"} />
             <br></br>
             <br></br>
@@ -1286,11 +1101,7 @@ function AccountManager({ mnemonic }) {
               >
                 Reject
               </Button>
-              <Button
-                style={{ width: "270px" }}
-                colorScheme="brand"
-                onClick={signTransaction}
-              >
+              <Button style={{ width: "270px" }} colorScheme="brand" onClick={signTransaction}>
                 Accept
               </Button>
             </HStack>
@@ -1300,15 +1111,7 @@ function AccountManager({ mnemonic }) {
 
       {showImportModal && (
         <ModalWrapper>
-          <VStack
-            height={"max-content"}
-            position={"relative"}
-            zIndex={2}
-            bg={"white"}
-            width={"100vw"}
-            spacing={10}
-            paddingBottom={"20px"}
-          >
+          <VStack height={"max-content"} position={"relative"} zIndex={2} bg={"white"} width={"100vw"} spacing={10} paddingBottom={"20px"}>
             <Img width={"300px"} src={"./indexx-wallet-new1.png"} />
             <br></br>
             <br></br>
@@ -1338,22 +1141,11 @@ function AccountManager({ mnemonic }) {
             />
 
             <HStack>
-              <Button
-                style={{ width: "270px" }}
-                colorScheme="brand"
-                onClick={() => importAccount()}
-              >
+              <Button style={{ width: "270px" }} colorScheme="brand" onClick={() => importAccount()}>
                 Import
               </Button>
 
-              <Button
-                style={{ width: "270px" }}
-                color="white"
-                variant="solid"
-                bg="black"
-                _hover={{ bg: "black" }}
-                onClick={() => setShowImportModal(false)}
-              >
+              <Button style={{ width: "270px" }} color="white" variant="solid" bg="black" _hover={{ bg: "black" }} onClick={() => setShowImportModal(false)}>
                 Complete
               </Button>
             </HStack>
@@ -1375,15 +1167,10 @@ function AccountManager({ mnemonic }) {
             // marginBottom={"140px"}
             paddingTop={"20px"}
           >
-            <Img
-              width={"300px"}
-              position={"relative"}
-              src={"./indexx-wallet-new1.png"}
-            />
+            <Img width={"300px"} position={"relative"} src={"./indexx-wallet-new1.png"} />
             <br></br>
             <br></br>
             <h1 style={{ fontSize: "24px" }}> Your Digital Asset</h1>
-
 
             <Tabs>
               <TabList width={"40vw"} justifyContent={"space-between"}>
@@ -1402,9 +1189,7 @@ function AccountManager({ mnemonic }) {
                             key={item.address + item.name}
                             asset={item}
                             chain={selectedChain}
-                            userAddress={
-                              selectedAccount ? selectedAccount.address : null
-                            }
+                            userAddress={selectedAccount ? selectedAccount.address : null}
                           />
                         );
                       })}
@@ -1420,13 +1205,7 @@ function AccountManager({ mnemonic }) {
                       <>
                         <VStack spacing={5}>
                           {transactions?.map((asset) => {
-                            return (
-                              <NFTsInstance
-                                key={asset.hash.toString()}
-                                asset={asset}
-                                selectedChain={selectedChain}
-                              />
-                            );
+                            return <NFTsInstance key={asset.hash.toString()} asset={asset} selectedChain={selectedChain} />;
                           })}
                         </VStack>
                       </>
@@ -1476,13 +1255,7 @@ function AccountManager({ mnemonic }) {
                 <>
                   <VStack spacing={5}>
                     {transactions.map((asset) => {
-                      return (
-                        <TransactionInstance
-                          key={asset.hash.toString()}
-                          asset={asset}
-                          selectedChain={selectedChain}
-                        />
-                      );
+                      return <TransactionInstance key={asset.hash.toString()} asset={asset} selectedChain={selectedChain} />;
                     })}
                   </VStack>
                 </>
@@ -1534,12 +1307,8 @@ function AccountManager({ mnemonic }) {
                           key={asset.hash.toString()}
                           asset={asset}
                           selectedChain={selectedChain}
-                          countOfUnreadNotifications={
-                            countOfUnreadNotifications
-                          }
-                          setCountOfUnreadNotifications={
-                            setCountOfUnreadNotifications
-                          }
+                          countOfUnreadNotifications={countOfUnreadNotifications}
+                          setCountOfUnreadNotifications={setCountOfUnreadNotifications}
                         />
                       );
                     })}
@@ -1593,12 +1362,8 @@ function AccountManager({ mnemonic }) {
                           key={asset.hash.toString()}
                           asset={asset}
                           selectedChain={selectedChain}
-                          countOfUnreadNotifications={
-                            countOfUnreadNotifications
-                          }
-                          setCountOfUnreadNotifications={
-                            setCountOfUnreadNotifications
-                          }
+                          countOfUnreadNotifications={countOfUnreadNotifications}
+                          setCountOfUnreadNotifications={setCountOfUnreadNotifications}
                         />
                       );
                     })}
@@ -1634,7 +1399,7 @@ function AccountManager({ mnemonic }) {
               borderRadius={"20px"}
               paddingTop={"5vh"}
               paddingBottom={"40px"}
-            // overflowY={"scroll"}
+              // overflowY={"scroll"}
             >
               {accounts?.map((account) => {
                 return (
@@ -1660,14 +1425,7 @@ function AccountManager({ mnemonic }) {
               <br></br>
               <br></br>
 
-              <Button
-                style={{ width: "270px" }}
-                color="white"
-                variant="solid"
-                bg="black"
-                _hover={{ bg: "black" }}
-                onClick={() => setShowAccounts(false)}
-              >
+              <Button style={{ width: "270px" }} color="white" variant="solid" bg="black" _hover={{ bg: "black" }} onClick={() => setShowAccounts(false)}>
                 Complete
               </Button>
             </VStack>
