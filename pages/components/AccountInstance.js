@@ -89,7 +89,7 @@ function AccountInstance({
             <Img
               height={size == "sm" ? "20px" : "20px"}
               // borderRadius={"50%"}
-              src={"./new_indexx_wallet1.PNG"}
+              src={"./indexx-wallet-new1.PNG"}
             />
           )}
 

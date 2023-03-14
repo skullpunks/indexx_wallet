@@ -5,7 +5,10 @@ import { capitalize } from "../api/Utilities";
 import Moralis from 'moralis';
 import { EvmChain } from '@moralisweb3/common-evm-utils';
 import axios from "axios";
-
+Moralis.start({
+  apiKey: '4uNCwknwfDf2GaE6Zm8TWQK5qRcH5QOOxQJCf6GibK1jSUS6ctI9pgGzKBpug5q6',
+  // ...and any other configuration
+});
 function NFTsInstance({ asset, selectedChain }) {
   const [explorerURL, setExplorerURL] = useState("");
   const [chain, setChain] = useState();
@@ -13,6 +16,7 @@ function NFTsInstance({ asset, selectedChain }) {
   const [NFTname, setNFTname] = useState();
   const [OrgNFTname, setOrgNFTname] = useState();
   const [openseaURL, setOpenseaURL] = useState();
+  const [openseaBaseURL, setOpenseaBaseURL] = useState();
 
   useEffect(() => {
     //Filter asset arr with property having both erc721 and erc1155
@@ -26,9 +30,11 @@ function NFTsInstance({ asset, selectedChain }) {
     } else if (String(selectedChain).localeCompare("mainnet") === 0) {
       setExplorerURL("https://etherscan.io/tx/" + asset?.hash);
       setChain(EvmChain.ETHEREUM);
+      setOpenseaBaseURL("https://opensea.io/assets/ethereum");
     } else if (String(selectedChain).localeCompare("goerli") === 0) {
       setExplorerURL("https://goerli.etherscan.io/tx/" + asset?.hash);
       setChain(EvmChain.GOERLI);
+      setOpenseaBaseURL("https://testnets.opensea.io/assets/goerli");
     } else if (String(selectedChain).localeCompare("bscMainNet") === 0) {
       setExplorerURL("https://bscscan.com/tx/" + asset?.hash);
       setChain(EvmChain.BSC);
@@ -40,17 +46,7 @@ function NFTsInstance({ asset, selectedChain }) {
   }, [])
 
   const getNFTdata = async (contractAddress, NFTTokenId, chainData) => {
-
     try {
-      const chain = chainData;
-      const address = contractAddress;
-
-      const tokenId = NFTTokenId;
-
-      await Moralis.start({
-        apiKey: '4uNCwknwfDf2GaE6Zm8TWQK5qRcH5QOOxQJCf6GibK1jSUS6ctI9pgGzKBpug5q6',
-        // ...and any other configuration
-      });
 
       const res = await axios.get(`https://deep-index.moralis.io/api/v2/nft/${contractAddress}/${NFTTokenId}?chain=goerli&format=decimal`, {
         headers: {
@@ -66,8 +62,8 @@ function NFTsInstance({ asset, selectedChain }) {
       console.log(nftImage)
       setIPFSURL('https://ipfs.io/' + nftImage)
       setOrgNFTname(resIPFS.data.name);
-      setOpenseaURL(`https://testnets.opensea.io/assets/goerli/${contractAddress}/${NFTTokenId}` )
-
+      setOpenseaURL(`${openseaBaseURL}/${contractAddress}/${NFTTokenId}`)
+      return;
       // const response = await Moralis.EvmApi.nft.getNFTMetadata({
       //   address,
       //   chain,
@@ -86,10 +82,12 @@ function NFTsInstance({ asset, selectedChain }) {
     return <></>;
   }
   else {
-    console.log('asset', asset, selectedChain)
+    console.log('asset', asset?.category, selectedChain)
     console.log('cADD', asset?.rawContract?.address)
     console.log('cADD', asset?.tokenId, parseInt(asset?.tokenId, 16), chain)
-    getNFTdata(asset?.rawContract?.address, parseInt(asset?.tokenId, 16), chain)
+    if (chain !== undefined) {
+      getNFTdata(asset?.rawContract?.address, parseInt(asset?.tokenId, 16), chain)
+    }
   };
   return (
     <HStack
@@ -128,14 +126,14 @@ function NFTsInstance({ asset, selectedChain }) {
 
 
         <IconButton
-          icon={<Image 
-            src={"./scan1.png"} width={"30px"} height={"30px"}/>}
+          icon={<Image
+            src={"./scan1.png"} width={"30px"} height={"30px"} />}
           onClick={() => window.open(explorerURL)}
         //onClick={() => <BuyMethods buyMethods={buyMethods}/>}
         />
 
         <IconButton
-          icon={<Image src={"./opensea.png"}  width={"30px"} height={"30px"}/>}
+          icon={<Image src={"./opensea.png"} width={"30px"} height={"30px"} />}
           onClick={() => window.open(openseaURL)}
         //onClick={() => <BuyMethods buyMethods={buyMethods}/>}
         />
