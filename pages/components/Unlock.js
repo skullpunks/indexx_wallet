@@ -94,17 +94,18 @@ function Unlock({ unlocker, firstTime }) {
           // height={"100px"}
           width={"300px"}
           // borderRadius={"50%"}
-          src={"./blue-wallet-expanded.png"}
+          src={"./indexx-wallet-new1.png"}
         />
-        {!originalPassword ? <Heading fontSize={"24px"}>Create Password</Heading>
+        {!originalPassword ?
+          <h1 style={{ fontSize: "24px" }}>Create Password</h1>
           :
-          <Heading fontSize={"24px"}>Password</Heading>
+          <h1 style={{ fontSize: "24px" }}>Password</h1>
         }
       </VStack>
 
       <VStack spacing={10}>
         <Input
-          width={"100%"}
+          width={"300px"}
           border={"1px solid grey"}
           colorScheme="brand"
           placeholder={(!originalPassword ? "New password (8 Characters min)" : "Password")}
@@ -114,7 +115,7 @@ function Unlock({ unlocker, firstTime }) {
         {!originalPassword && (
           <>
             <Input
-              width={"100%"}
+              width={"300px"}
               border={"1px solid grey"}
               colorScheme="brand"
               placeholder={"Confirm Password"}
@@ -132,7 +133,7 @@ function Unlock({ unlocker, firstTime }) {
           </>
         )}
 
-        <Button style={{ width: "270px" }} onClick={unlock} colorScheme="brand">
+        <Button style={{ width: "300px" }} onClick={unlock} colorScheme="brand">
           Unlock
         </Button>
       </VStack>

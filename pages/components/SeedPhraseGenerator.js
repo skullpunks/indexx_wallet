@@ -304,7 +304,9 @@ const SeedPhraseManager = () => {
                   width={"100%"}
                   height={"80%"}
                   justify={"center"}>
-                  <Heading fontSize={30}>Create a new wallet using Facial Recogition</Heading>
+                  <h1 style={{ fontSize: "24px" }}>Create a new wallet using Facial Recogition</h1>
+
+
                   <Wrap spacing={10}>
                     <WrapItem key={"seed-phrase"}>
                       <Button
@@ -339,9 +341,10 @@ const SeedPhraseManager = () => {
                     // height={"100px"}
                     width={"300px"}
                     // borderRadius={"50%"}
-                    src={"./blue-wallet-expanded.png"}
+                    src={"./indexx-wallet-new1.png"}
                   />
-                  <Heading fontSize={30}>Seed Phrase</Heading>
+                  <h1 style={{ fontSize: "24px" }}>Seed Phrase</h1>
+
                   <p className="wallet-image4">Copy the seed phrase and keep it in a secure place(There you will see a 12 word seed phrase. This is really important and usually not a good idea to store digitally, so take your time and write it down) then click on copy button</p>
                   <br></br>
 
@@ -407,7 +410,7 @@ const SeedPhraseManager = () => {
                   height={"50px"}
                   width={"324px"}
                   // borderRadius={"50%"}
-                  src={"./blue-wallet-expanded.png"}
+                  src={"./indexx-wallet-new1.png"}
                 />
                 <br></br>
                 <br></br>
@@ -443,7 +446,7 @@ const SeedPhraseManager = () => {
                 // height={"100px"}
                 width={"300px"}
                 // borderRadius={"50%"}
-                src={"./blue-wallet-expanded.png"}
+                src={"./indexx-wallet-new1.png"}
               />
               <FormLabel>Enter Seed Phrase</FormLabel>
               <p style={
