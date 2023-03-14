@@ -95,7 +95,7 @@ function AccountManager({ mnemonic }) {
   const [countOfUnreadNotifications, setCountOfUnreadNotifications] = useState({
     mainnet: 0,
     goerli: 0,
-    bitcoin:0,
+    bitcoin: 0,
     bitcoinTestNet: 0,
     bscMainNet: 0,
     bscTestNet: 0,
@@ -103,7 +103,7 @@ function AccountManager({ mnemonic }) {
 
   const [isSleeping, setIsSleeping] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
-  console.log("Notificaiton: ",selectedChain, countOfUnreadNotifications[selectedChain] );
+  console.log("Notificaiton: ", selectedChain, countOfUnreadNotifications[selectedChain]);
   const web3 = useRef(null);
   const toast = useToast();
   function Toast(message) {
@@ -464,7 +464,7 @@ function AccountManager({ mnemonic }) {
               />
             </Button> */}
 
-            {showAccounts && (
+            {/* {showAccounts && (
               <>
                 <ModalWrapper>
                   <VStack
@@ -515,7 +515,7 @@ function AccountManager({ mnemonic }) {
                   </VStack>
                 </ModalWrapper>
               </>
-            )}
+            )} */}
 
             {showAccountDetails && (
               <>
@@ -1486,6 +1486,59 @@ function AccountManager({ mnemonic }) {
             </Button>
           </VStack>
         </ModalWrapper>
+      )}
+
+      {showAccounts && (
+        <>
+          <ModalWrapper>
+            <VStack
+              height={"max-content"}
+              position={"relative"}
+              zIndex={2}
+              bg={"white"}
+              width={"70vw"}
+              borderRadius={"20px"}
+              paddingTop={"5vh"}
+              paddingBottom={"40px"}
+            // overflowY={"scroll"}
+            >
+              {accounts?.map((account) => {
+                return (
+                  <AccountInstance
+                    selector={async (account) => {
+                      setShowAccounts(false);
+                      setLoadingMessage("Switching Account");
+                      let balance = await checkBalance(account.address);
+                      setLoadingMessage("Getting account details");
+
+                      setSelectedAccount({ ...account, balance });
+                      setTimeout(() => {
+                        setLoadingMessage(null);
+                      }, 2000);
+                    }}
+                    copyable={false}
+                    account={account}
+                    showDetails={true}
+                    chain={selectedChain}
+                  />
+                );
+              })}
+              <br></br>
+              <br></br>
+
+              <Button
+                style={{ width: "270px" }}
+                color="white"
+                variant="solid"
+                bg="black"
+                _hover={{ bg: "black" }}
+                onClick={() => setShowAccounts(false)}
+              >
+                Complete
+              </Button>
+            </VStack>
+          </ModalWrapper>
+        </>
       )}
     </VStack>
   );
